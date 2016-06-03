@@ -30,6 +30,22 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                      #year_min = 1966, year_max = 2015,
                                      #limit = 5)
 
+city_names <- c("portugal","pittsburgh","quebec",
+                  "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
+                  "pamplona","rapid city","christchurch","sarpsborg",
+                  "barrow-in-furness","murcia","melbourne","bovenkarspel",
+                  "london","stafford","philadelphia")
+
+stations <- for(i in 1:length(city_names))
+            {
+              print(meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+                                  station_data = station_data,
+                                  var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
+                                  year_min = 1966, year_max = 2015,
+                                  limit = 5))
+            }
+
+
 st_portugal <- meteo_nearby_stations(lat_lon_df = outbreak_loc[1,],
                             station_data = station_data,
                             var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
