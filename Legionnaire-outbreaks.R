@@ -36,7 +36,7 @@ city_names <- c("portugal","pittsburgh","quebec",
                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
                   "london","stafford","philadelphia")
 
-stations <- for(i in 1:length(city_names))
+for(i in 1:length(city_names))
             {
               print(meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
                                   station_data = station_data,
@@ -44,7 +44,6 @@ stations <- for(i in 1:length(city_names))
                                   year_min = 1966, year_max = 2015,
                                   limit = 5))
             }
-
 
 st_portugal <- meteo_nearby_stations(lat_lon_df = outbreak_loc[1,],
                             station_data = station_data,
