@@ -1,4 +1,3 @@
-#test
 library(devtools)
 #install_github("ropenscilabs/rnoaa")
 library(rnoaa)
@@ -161,6 +160,12 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=tmax)) + geom_line() + theme_minimal()
 
+
+#radius = 30
+#hourly
+#loops
+
+# 10:30-11:00
 
 #getmap("london")
 #ggmap
