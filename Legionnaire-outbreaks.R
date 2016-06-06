@@ -8,7 +8,6 @@ library(plyr)
 library(tidyr)
 library(weathermetrics)
 library(ggplot2)
-library(lubridate)
 
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
@@ -30,8 +29,6 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                           2003, 2006, 2005, 2005, 2005, 2002,
                                           2001, 2000, 1999, 1989, 1985, 1976))
                            
-outbreak_loc$date_min <- as.Date(outbreak_loc$date_min, format = "%Y-%m-%d")
-outbreak_loc$date_max <- as.Date(outbreak_loc$date_max, format = "%Y-%m-%d")
 
 #station_data <- ghcnd_stations()[[1]]
 
@@ -84,9 +81,24 @@ filtered_data <- filter(meteo_df, id %in% good_monitors)
 averaged <- ave_weather(filtered_data)
 
 ggplot(averaged, aes(x=date, y=prcp)) + 
-  ylab("PRCP (10ths of mm)") + xlab("Year") + ggtitle("Quebec PRCP") +
+  ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Quebec Precipitation") +
   geom_line() + theme_minimal()
 
+ggplot(averaged, aes(x=date, y=snow)) + 
+  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Quebec Snowfall") +
+  geom_line() + theme_minimal()
+
+ggplot(averaged, aes(x=date, y=snwd)) + 
+  ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Quebec Snow Depth") +
+  geom_line() + theme_minimal()
+
+ggplot(averaged, aes(x=date, y=tmax)) + 
+  ylab(" Max Temperature (C)") + xlab("Year") + ggtitle("Quebec Max Temperature") +
+  geom_line() + theme_minimal()
+
+ggplot(averaged, aes(x=date, y=tmin)) + 
+  ylab(" Min Temperature (C)") + xlab("Year") + ggtitle("Quebec Min Temperature") +
+  geom_line() + theme_minimal()
 
 #hourly
 
