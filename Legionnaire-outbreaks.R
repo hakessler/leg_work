@@ -83,8 +83,9 @@ filtered_data <- filter(meteo_df, id %in% good_monitors)
 
 averaged <- ave_weather(filtered_data)
 
-ggplot(averaged, aes(x=date, y=prcp)) + geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=tmax)) + geom_line() + theme_minimal()
+ggplot(averaged, aes(x=date, y=prcp)) + 
+  ylab("PRCP (10ths of mm)") + xlab("Year") + ggtitle("Quebec PRCP") +
+  geom_line() + theme_minimal()
 
 
 #hourly
