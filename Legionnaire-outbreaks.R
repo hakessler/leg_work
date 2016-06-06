@@ -8,7 +8,6 @@ library(plyr)
 library(tidyr)
 library(weathermetrics)
 library(ggplot2)
-library(lubridate)
 
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
@@ -30,8 +29,6 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                           2003, 2006, 2005, 2005, 2005, 2002,
                                           2001, 2000, 1999, 1989, 1985, 1976))
                            
-outbreak_loc$date_min <- as.Date(outbreak_loc$date_min, format = "%Y-%m-%d")
-outbreak_loc$date_max <- as.Date(outbreak_loc$date_max, format = "%Y-%m-%d")
 
 #station_data <- ghcnd_stations()[[1]]
 
