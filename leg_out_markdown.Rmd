@@ -21,8 +21,8 @@ library(devtools)
 library(rnoaa)
 library(ggmap)
 library(countyweather)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(tidyr)
 library(weathermetrics)
 library(ggplot2)
@@ -59,9 +59,7 @@ outbreak_loc
 The next function will download information from all of the stations. It only needs to be downloaded once per session. It will take a couple minutes to download
 
 ```{r}
-
 station_data <- ghcnd_stations()[[1]]
-
 ```
 
 I created a loop to get a list of the stations within 30 km of the location.
@@ -72,9 +70,10 @@ city_names <- c("portugal","pittsburgh","quebec",
                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
                   "london","stafford","philadelphia")
 
+df <- list()
 for(i in 1:length(city_names))
             {
-              df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+              df[[i]] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
                                   station_data = station_data,
                                   var = c("PRCP","TAVG","TMAX","TMIN",
                                           "AWND","MDPR"),
@@ -86,7 +85,6 @@ for(i in 1:length(city_names))
 names(df) <- city_names
 stations <- df
 stations
-
 ```
 
 
@@ -113,13 +111,11 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("PRCP (10ths of mm)") + xlab("Year") + ggtitle("Quebec PRCP") +
   geom_line() + theme_minimal()
-
-
 ```
 
 Below are all the plots using the above code
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval = FALSE}
 meteo_df <- meteo_pull_monitors(monitors = stations$quebec$id,
                                 keep_flags = FALSE,
                                 date_min = "2002-01-01",
