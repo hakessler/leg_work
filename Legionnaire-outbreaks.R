@@ -30,7 +30,7 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                           2001, 2000, 1999, 1989, 1985, 1976))
                            
 
-#station_data <- ghcnd_stations()[[1]]
+station_data <- ghcnd_stations()[[1]]
 
 
 ####DATA####
@@ -48,16 +48,17 @@ city_names <- c("portugal","pittsburgh","quebec",
                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
                   "london","stafford","philadelphia")
 
+df <- list()
 for(i in 1:length(city_names))
-            {
-              df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
-                                  station_data = station_data,
-                                  var = c("PRCP","TAVG","TMAX","TMIN",
-                                          "AWND","MDPR"),
-                                  year_min = outbreak_loc[i, "year_min"],
-                                  year_max = outbreak_loc[i, "year_max"],
-                                  radius = 30))
-            }
+  {
+  df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+                                    station_data = station_data,
+                                    var = c("PRCP","TAVG","TMAX","TMIN",
+                                            "AWND","MDPR"),
+                                    year_min = outbreak_loc[i, "year_min"],
+                                    year_max = outbreak_loc[i, "year_max"],
+                                    radius = 30))
+  }
 
 names(df) <- city_names
 stations <- df

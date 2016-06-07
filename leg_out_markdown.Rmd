@@ -73,7 +73,7 @@ city_names <- c("portugal","pittsburgh","quebec",
 df <- list()
 for(i in 1:length(city_names))
             {
-              df[[i]] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+              df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
                                   station_data = station_data,
                                   var = c("PRCP","TAVG","TMAX","TMIN",
                                           "AWND","MDPR"),
@@ -115,7 +115,7 @@ ggplot(averaged, aes(x=date, y=prcp)) +
 
 Below are all the plots using the above code
 
-```{r, echo=FALSE, eval = FALSE}
+```{r, echo=FALSE}
 meteo_df <- meteo_pull_monitors(monitors = stations$quebec$id,
                                 keep_flags = FALSE,
                                 date_min = "2002-01-01",
