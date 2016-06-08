@@ -14,6 +14,11 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "pamplona","rapid city","christchurch","sarpsborg",
                                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
                                   "london","stafford","philadelphia"),
+                           "file_id" = c("portugal","pittsburgh","quebec",
+                                         "stoke_on_trent","edinburgh","miyazaki","pas_de_calais",
+                                         "pamplona","rapid_city","christchurch","sarpsborg",
+                                         "barrow_in_furness","murcia","melbourne","bovenkarspel",
+                                         "london","stafford","philadelphia"),
                            "latitude" = c(38.96, 40.43, 46.85, 53.02, 55.94,
                                           31.89, 50.51, 42.81, 44.06, -43.51,
                                           59.28, 54.10, 37.98, -37.86, 52.7,
@@ -25,13 +30,20 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                            "year_min" = c(2004, 2003, 2002, 2002, 2002, 1992, 
                                           1993, 1996, 1995, 1995, 1995, 1992, 
                                           1991, 1990, 1989, 1979, 1975, 1966),
+                           "date_min" = c("2004-01-01", "2003-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "1992-01-01", 
+                                          "1993-01-01", "1996-01-01", "1995-01-01", "1995-01-01", "1995-01-01", "1992-01-01", 
+                                          "1991-01-01", "1990-01-01", "1989-01-01", "1979-01-01", "1975-01-01", "1966-01-01"),
                            "year_max" = c(2014, 2013, 2012, 2012, 2012, 2002,
                                           2003, 2006, 2005, 2005, 2005, 2002,
-                                          2001, 2000, 1999, 1989, 1985, 1976))
-                           
+                                          2001, 2000, 1999, 1989, 1985, 1976),
+                           "date_max" = c("2014-12-31", "2013-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2002-12-31",
+                                          "2003-12-31", "2006-12-31", "2005-12-31", "2005-12-31", "2005-12-31", "2002-12-31",
+                                          "2001-12-31", "2000-12-31", "1999-12-31", "1989-12-31", "1985-12-31", "1976-12-31"))
+
+outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
+outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
 
 station_data <- ghcnd_stations()[[1]]
-
 
 ####DATA####
 
@@ -62,6 +74,32 @@ for(i in 1:length(city_names))
 
 names(df) <- city_names
 stations <- df
+
+### DATA AND PLOTS ###
+for(i in 1:length(city_names))
+{
+   meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
+                                keep_flags = FALSE,
+                                date_min = outbreak_loc$date_min[i],
+                                date_max = outbreak_loc$date_max[i],
+                                var = c("prcp","snow","snwd","tmax","tmin","tavg"))
+  coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
+  filtered <- filter_coverage(coverage_df, 0.90)
+  good_monitors <- unique(filtered$id)
+  filtered_data <- filter(meteo_df, id %in% good_monitors)
+  averaged <- ave_weather(filtered_data)
+
+  file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
+  saveRDS(averaged, file_name)
+  readRDS(file_name)
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  ggplot(ex, aes(x = date, y = value)) + geom_line() +
+    facet_wrap(~ metric, ncol = 2) + 
+    ggtitle(outbreak_loc$id[i])
+}
 
 ###PORTUGAL-NULL###
 
@@ -405,6 +443,11 @@ ggplot(averaged, aes(x=date, y=tmin)) +
   ylab(" Min Temperature (C)") + xlab("Year") + ggtitle("Philadelphia Min Temperature") +
   geom_line() + theme_minimal()
 
-#hourly
 
-# 10:30-11:00 W
+
+#outbreak day of year plot - each hemisphere
+#yday lubridate yday(start_date)
+#ymd to convert
+
+#outbreak day, 2 weeks before, percentile
+#ecdf
