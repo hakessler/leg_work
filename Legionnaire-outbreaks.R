@@ -140,11 +140,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Miyazaki Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Miyazaki Snowfall") +
-  geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snwd)) + 
-  ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Miyazaki Snow Depth") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Miyazaki Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=tmax)) + 
   ylab(" Max Temperature (C)") + xlab("Year") + ggtitle("Miyazaki Max Temperature") +
@@ -170,8 +167,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Pamplona Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Pamplona Snowfall") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Pamplona Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Pamplona Snow Depth") +
@@ -210,6 +207,9 @@ ggplot(averaged, aes(x=date, y=tmax)) +
 ggplot(averaged, aes(x=date, y=tmin)) + 
   ylab(" Min Temperature (C)") + xlab("Year") + ggtitle("Rapid City Min Temperature") +
   geom_line() + theme_minimal()
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Rapid City Average Temperature") +
+  geom_line() + theme_minimal()
 
 ###CHRISTCHURCH###
 meteo_df <- meteo_pull_monitors(monitors = stations$christchurch$id,
@@ -226,8 +226,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Christchurch Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Christchurch Snowfall") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Christchurch Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Christchurch Snow Depth") +
@@ -254,9 +254,6 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Sarpsborg Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Sarpsborg Snowfall") +
-  geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Sarpsborg Snow Depth") +
   geom_line() + theme_minimal()
@@ -272,8 +269,8 @@ ggplot(averaged, aes(x=date, y=tmin)) +
 ###MURCIA###
 meteo_df <- meteo_pull_monitors(monitors = stations$murcia$id,
                                 keep_flags = FALSE,
-                                date_min = "1995-01-01",
-                                date_max = "2005-12-31",
+                                date_min = "1991-01-01",
+                                date_max = "2001-12-31",
                                 var = "all")
 coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
 filtered <- filter_coverage(coverage_df, 0.90)
@@ -284,8 +281,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Murcia Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Murcia Snowfall") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Murcia Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Murcia Snow Depth") +
@@ -300,8 +297,8 @@ ggplot(averaged, aes(x=date, y=tmin)) +
 ###MELBOURNE###
 meteo_df <- meteo_pull_monitors(monitors = stations$melbourne$id,
                                 keep_flags = FALSE,
-                                date_min = "1995-01-01",
-                                date_max = "2005-12-31",
+                                date_min = "1990-01-01",
+                                date_max = "2000-12-31",
                                 var = "all")
 coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
 filtered <- filter_coverage(coverage_df, 0.90)
@@ -312,8 +309,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Melbourne Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Melbourne Snowfall") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("Melbourne Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Melbourne Snow Depth") +
@@ -328,8 +325,8 @@ ggplot(averaged, aes(x=date, y=tmin)) +
 ###BOVENKARSPEL###
 meteo_df <- meteo_pull_monitors(monitors = stations$bovenkarspel$id,
                                 keep_flags = FALSE,
-                                date_min = "1995-01-01",
-                                date_max = "2005-12-31",
+                                date_min = "1989-01-01",
+                                date_max = "1999-12-31",
                                 var = "all")
 coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
 filtered <- filter_coverage(coverage_df, 0.90)
@@ -339,9 +336,6 @@ averaged <- ave_weather(filtered_data)
 
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("Bovenkarspel Precipitation") +
-  geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("Bovenkarspel Snowfall") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("Bovenkarspel Snow Depth") +
@@ -356,8 +350,8 @@ ggplot(averaged, aes(x=date, y=tmin)) +
 ###LONDON###
 meteo_df <- meteo_pull_monitors(monitors = stations$london$id,
                                 keep_flags = FALSE,
-                                date_min = "1995-01-01",
-                                date_max = "2005-12-31",
+                                date_min = "1979-01-01",
+                                date_max = "1989-12-31",
                                 var = "all")
 coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
 filtered <- filter_coverage(coverage_df, 0.90)
@@ -368,8 +362,8 @@ averaged <- ave_weather(filtered_data)
 ggplot(averaged, aes(x=date, y=prcp)) + 
   ylab("Precipitation (mm)") + xlab("Year") + ggtitle("London Precipitation") +
   geom_line() + theme_minimal()
-ggplot(averaged, aes(x=date, y=snow)) + 
-  ylab("Snowfall (mm)") + xlab("Year") + ggtitle("London Snowfall") +
+ggplot(averaged, aes(x=date, y=tavg)) + 
+  ylab("Average Temperature (C)") + xlab("Year") + ggtitle("London Average Temperature") +
   geom_line() + theme_minimal()
 ggplot(averaged, aes(x=date, y=snwd)) + 
   ylab("Snow Depth (mm)") + xlab("Year") + ggtitle("London Snow Depth") +
@@ -386,8 +380,8 @@ ggplot(averaged, aes(x=date, y=tmin)) +
 ###PHILADELPHIA###
 meteo_df <- meteo_pull_monitors(monitors = stations$philadelphia$id,
                                 keep_flags = FALSE,
-                                date_min = "1995-01-01",
-                                date_max = "2005-12-31",
+                                date_min = "1966-01-01",
+                                date_max = "1976-12-31",
                                 var = "all")
 coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
 filtered <- filter_coverage(coverage_df, 0.90)
