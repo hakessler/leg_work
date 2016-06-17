@@ -117,6 +117,7 @@ for(file in list.files("weather_files")){
   to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
+  print(b)
 }
 
 
