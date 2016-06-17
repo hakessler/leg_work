@@ -113,6 +113,10 @@ for(file in list.files("weather_files")){
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
   print(a)
+  
+  to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
+  b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
+    geom_line() + ggtitle(city_name)
 }
 
 
