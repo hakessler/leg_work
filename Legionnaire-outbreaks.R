@@ -102,6 +102,19 @@ for(i in c(2,3,6,8,9,10,11,13,14,15,16,18))
   
 }
 
+for(file in list.files("weather_files")){
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  a <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
+    facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
+    ggtitle(city_name)
+  print(a)
+}
+
 
 
 #outbreak day of year plot - each hemisphere
