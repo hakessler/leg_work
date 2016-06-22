@@ -115,7 +115,14 @@ for(file in list.files("weather_files")){
   print(a)
 }
 
-
+#city: histogram for prcp in ggplot, lines for 2 weeks before outbreak, 
+#geom-vline(-)
+#subsets for each day before the outbreak
+#lubridate, day-14days
+#dply, filter(df, date %within% ) do ?%within%, int<-?interval()
+#newdf <- filter(df, date %within% int)
+#?ddays
+#friday, 9:30
 
 #outbreak day of year plot - each hemisphere
 #yday lubridate yday(start_date)
