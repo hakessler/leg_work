@@ -13,32 +13,41 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
                                   "pamplona","rapid city","christchurch","sarpsborg",
                                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                                  "london","stafford","philadelphia"),
+                                  "london","stafford","philadelphia", "sydney","genesee1",
+                                  "genesee2","columbus", "bronx"),
                            "file_id" = c("portugal","pittsburgh","quebec",
                                          "stoke_on_trent","edinburgh","miyazaki","pas_de_calais",
                                          "pamplona","rapid_city","christchurch","sarpsborg",
                                          "barrow_in_furness","murcia","melbourne","bovenkarspel",
-                                         "london","stafford","philadelphia"),
+                                         "london","stafford","philadelphia","sydney","genesee1",
+                                         "genesee2","columbus", "bronx"),
                            "latitude" = c(38.96, 40.43, 46.85, 53.02, 55.94,
                                           31.89, 50.51, 42.81, 44.06, -43.51,
                                           59.28, 54.10, 37.98, -37.86, 52.7,
-                                          51.52, 52.80, 40.00),
+                                          51.52, 52.80, 40.00, -33.85, 43.09,
+                                          43.09, 39.98, 40.82),
                            "longitude" = c(-8.99, -79.98, -71.34, -2.15, -3.20,
                                            131.34, 2.37, -1.65, -103.22,
                                            172.59, 11.08, -3.22, -1.12,
-                                           145.07, 5.24, -0.10, -2.10, -75.11),
-                           "year_min" = c(2004, 2003, 2002, 2002, 2002, 1992, 
+                                           145.07, 5.24, -0.10, -2.10, -75.11,
+                                           150.93, -83.63, -83.63, -82.99, -73.92),
+                           "year_min" = c(2004, 2002, 2002, 2002, 2002, 1992, 
                                           1993, 1996, 1995, 1995, 1995, 1992, 
-                                          1991, 1990, 1989, 1979, 1975, 1966),
-                           "date_min" = c("2004-01-01", "2003-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "1992-01-01", 
+                                          1991, 1990, 1989, 1979, 1975, 1966,
+                                          2006, 2004, 2005, 2003, 2005),
+                           "date_min" = c("2004-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "1992-01-01", 
                                           "1993-01-01", "1996-01-01", "1995-01-01", "1995-01-01", "1995-01-01", "1992-01-01", 
-                                          "1991-01-01", "1990-01-01", "1989-01-01", "1979-01-01", "1975-01-01", "1966-01-01"),
-                           "year_max" = c(2014, 2013, 2012, 2012, 2012, 2002,
+                                          "1991-01-01", "1990-01-01", "1989-01-01", "1979-01-01", "1975-01-01", "1966-01-01",
+                                          "2006-01-01", "2004-01-01", "2005-01-01", "2003-01-01", "2005-01-01"),
+                           "year_max" = c(2014, 2012, 2012, 2012, 2012, 2002,
                                           2003, 2006, 2005, 2005, 2005, 2002,
-                                          2001, 2000, 1999, 1989, 1985, 1976),
-                           "date_max" = c("2014-12-31", "2013-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2002-12-31",
+                                          2001, 2000, 1999, 1989, 1985, 1976,
+                                          2016, 2014, 2015, 2013, 2015),
+                           "date_max" = c("2014-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2002-12-31",
                                           "2003-12-31", "2006-12-31", "2005-12-31", "2005-12-31", "2005-12-31", "2002-12-31",
-                                          "2001-12-31", "2000-12-31", "1999-12-31", "1989-12-31", "1985-12-31", "1976-12-31"))
+                                          "2001-12-31", "2000-12-31", "1999-12-31", "1989-12-31", "1985-12-31", "1976-12-31",
+                                          "2016-12-31", "2014-12-31", "2015-12-31", "2013-12-31", "2015-12-31")
+                           )
 
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
@@ -58,12 +67,13 @@ city_names <- c("portugal","pittsburgh","quebec",
                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
                   "pamplona","rapid_city","christchurch","sarpsborg",
                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                  "london","stafford","philadelphia")
+                  "london","stafford","philadelphia","sydney","genesee1",
+                  "genesee2","columbus", "bronx")
 
 df <- list()
 for(i in 1:length(city_names))
   {
-  df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+    df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
                                     station_data = station_data,
                                     var = c("PRCP","TAVG","TMAX","TMIN",
                                             "AWND","MDPR"),
@@ -74,9 +84,10 @@ for(i in 1:length(city_names))
 
 names(df) <- city_names
 stations <- df
+stations
 
 ### DATA AND PLOTS ###
-for(i in c(2,3,6,8,9,10,11,13,14,15,16,18))
+for(i in c(2,3,6,8,9,10,11,13,14,15,16,19,20,21,22))
 {
    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
                                 keep_flags = FALSE,
@@ -91,24 +102,29 @@ for(i in c(2,3,6,8,9,10,11,13,14,15,16,18))
 
   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
   saveRDS(averaged, file_name)
-  readRDS(file_name)
-  
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-  ggplot(ex, aes(x = date, y = value)) + geom_line() +
-    facet_wrap(~ metric, ncol = 2) + 
-    ggtitle(outbreak_loc$id[i])
+  #readRDS(file_name)
   
 }
 
-for(file in list.files("weather_files")){
+outbreak_start <- data.frame("id"=c("pittsburgh","quebec","miyazaki","pamplona",
+                                    "rapid city","christchurch","sarpsborg","murcia",
+                                    "melbourne","bovenkarspel","london","philadelphia"),
+                             "start_date"=c("2012-08-26,"))
+
+for(file in list.files("weather_files"))
+  {
   city_name <- gsub(".rds", "", file)
   averaged <- readRDS(paste0("weather_files/", file))
   
   ex <- averaged %>%
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
+  
+  all <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
+    facet_wrap(~ metric, ncol = 2) + 
+    ggtitle(outbreak_loc$id[i])
+  print(all)
+  
   a <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
@@ -118,7 +134,15 @@ for(file in list.files("weather_files")){
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
   print(b)
-}
+  
+  }
+
+c_plot <- filter(ex, metric %in% c("prcp"))
+int <- 
+  C_outbreak <- filter(c_plot, date %within% int)
+c <- ggplot(test_plot, aes(value)) + geom_histogram(binwidth = 0.5)
++ geom_vline()
+print(c)
 
 #city: histogram for prcp in ggplot, lines for 2 weeks before outbreak, 
 #geom-vline(-)
