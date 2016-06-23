@@ -164,7 +164,7 @@ for(file in list.files("weather_files"))
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
   print(b)  
-
+}
 ```
 
 
