@@ -126,7 +126,7 @@ for(i in 1:length(outbreak_start$start_date)) {
 }
 
 outbreak_start
-rename(outbreak_start, replace = c("V3"="int_start"))
+outbreak_start <- rename(outbreak_start, replace = c("V3"="int_start"))
 
 for(file in list.files("weather_files"))
   {
@@ -149,17 +149,26 @@ for(file in list.files("weather_files"))
   
   }
 
-c_plot <- filter(ex, metric %in% c("prcp"))
-int <- 
-  C_outbreak <- filter(c_plot, date %within% int)
-c <- ggplot(test_plot, aes(value)) + geom_histogram(binwidth = 0.5)
-+ geom_vline()
-print(c)
 
-#city: histogram for prcp in ggplot, lines for 2 weeks before outbreak, 
-#geom-vline(-)
-#subsets for each day before the outbreak
-#lubridate, day-14days
+for(file in list.files("weather_files"))
+{
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  c_plot <- filter(ex, metric %in% c("prcp"))
+  int <- interval(ymd(outbreak_start$int_start[1]), ymd(outbreak_start$start_date[1]))
+  c_outbreak <- filter(c_plot, date %within% int)
+  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5)
+  + geom_vline(xintercept = c_outbreak$value)
+  print(c)
+  
+}
+  
+  
 #dply, filter(df, date %within% ) do ?%within%, int<-?interval()
 #newdf <- filter(df, date %within% int)
 #?ddays
@@ -168,6 +177,3 @@ print(c)
 #outbreak day of year plot - each hemisphere
 #yday lubridate yday(start_date)
 #ymd to convert
-
-#outbreak day, 2 weeks before, percentile
-#ecdf

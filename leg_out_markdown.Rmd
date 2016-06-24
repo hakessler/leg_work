@@ -162,4 +162,9 @@ for(file in list.files("weather_files"))
 }
 ```
 
+I also made a loop to plot histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days. 
+
+```{r}
+
+```
 
