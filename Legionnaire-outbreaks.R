@@ -123,9 +123,10 @@ for(i in 1:length(outbreak_start$start_date)) {
   a <- as.Date(outbreak_start$start_date[i])
   b <- a - 14
   outbreak_start[i,3] <- paste(b)
-  print(outbreak_start)
 }
 
+outbreak_start
+rename(outbreak_start, replace = c("V3"="int_start"))
 
 for(file in list.files("weather_files"))
   {
