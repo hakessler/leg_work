@@ -115,18 +115,16 @@ outbreak_start <- data.frame("id"=c("bovenkarspel","bronx","christchurch","colum
                                             "2002-07-18","2001-06-26","2006-06-01","2012-08-26",
                                             "2012-07-18","2005-05-26","2005-05-12","2016-04-25")
                              )
-
 outbreak_start$start_date <- ymd(outbreak_start$start_date)
-
-
 for(i in 1:length(outbreak_start$start_date)) {
   a <- as.Date(outbreak_start$start_date[i])
   b <- a - 14
   outbreak_start[i,3] <- paste(b)
 }
-
-outbreak_start
 outbreak_start <- rename(outbreak_start, replace = c("V3"="int_start"))
+ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1)
+
+
 
 for(file in list.files("weather_files"))
   {
@@ -168,12 +166,9 @@ for(file in list.files("weather_files"))
     print(c)
   }
 }
-  
-  
-#dply, filter(df, date %within% ) do ?%within%, int<-?interval()
-#newdf <- filter(df, date %within% int)
-#?ddays
-#friday, 9:30
+
+outbreak_start[] <- NULL
+outbreak_start_n <- outbreak_start[,3] <- NULL
 
 #outbreak day of year plot - each hemisphere
 #yday lubridate yday(start_date)
