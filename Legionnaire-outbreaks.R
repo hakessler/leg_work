@@ -88,7 +88,10 @@ stations <- df
 stations
 
 ### DATA AND PLOTS ###
-for(i in c(2,3,6,8,9,10,11,13,14,15,16,19,20,21,22))
+
+has_stations <- sapply(stations, function(x) nrow(x) > 0)
+
+for(i in which(has_stations))
 {
    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
                                 keep_flags = FALSE,
@@ -122,7 +125,7 @@ for(i in 1:length(outbreak_start$start_date)) {
   outbreak_start[i,3] <- paste(b)
 }
 outbreak_start <- rename(outbreak_start, replace = c("V3"="int_start"))
-ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1)
+ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1) + xlim(c(0,366))
 
 
 
@@ -160,13 +163,26 @@ for(file in list.files("weather_files"))
   for(i in 1:length(outbreak_start$id)) {
     c_plot <- filter(ex, metric %in% c("prcp"))
     int <- interval(ymd(outbreak_start$int_start[i]), ymd(outbreak_start$start_date[i]))
-    c_outbreak <- filter(c_plot, date %within% int)
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5)
-      + geom_vline(xintercept = c_outbreak$value)
+    c_outbreak <- filter(c_plot, date %within% int) %>%
+      mutate(day_in_seq = 1:nrow(c_outbreak))
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 1) +
+       geom_vline(data = c_outbreak, 
+                  aes(xintercept = value, color = day_in_seq), 
+                  alpha = 0.25)
     print(c)
   }
 }
 
-#outbreak day of year plot - each hemisphere
+# 2 week values into percentile
+#?edcf({all precp values})({values to test})
+# city_ecdf <- ecdf({prcp values all})
+# df$percentile <- city_ecdf(value)
+#plot for all cities
+# x = 14 days, y = percentiles, all cities
+
+#9:30 wed, 6th
+
+#outbreak day of year plot - each hemisphere - facetting
+#add column n and s
 #yday lubridate yday(start_date)
 #ymd to convert
