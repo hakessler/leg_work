@@ -159,13 +159,14 @@ for(file in list.files("weather_files"))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
-  c_plot <- filter(ex, metric %in% c("prcp"))
-  int <- interval(ymd(outbreak_start$int_start[1]), ymd(outbreak_start$start_date[1]))
-  c_outbreak <- filter(c_plot, date %within% int)
-  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5)
-  + geom_vline(xintercept = c_outbreak$value)
-  print(c)
-  
+  for(i in 1:length(outbreak_start$id)) {
+    c_plot <- filter(ex, metric %in% c("prcp"))
+    int <- interval(ymd(outbreak_start$int_start[i]), ymd(outbreak_start$start_date[i]))
+    c_outbreak <- filter(c_plot, date %within% int)
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5)
+      + geom_vline(xintercept = c_outbreak$value)
+    print(c)
+  }
 }
   
   
