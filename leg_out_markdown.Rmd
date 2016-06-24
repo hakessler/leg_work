@@ -150,12 +150,6 @@ for(file in list.files("weather_files"))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
-  #all: 
-  all <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
-    facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
-    ggtitle(outbreak_loc$id[i])
-  print(all)
-  
   a <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)

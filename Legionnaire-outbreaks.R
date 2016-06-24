@@ -8,6 +8,7 @@ library(plyr)
 library(tidyr)
 library(weathermetrics)
 library(ggplot2)
+library(lubridate)
 
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
@@ -106,10 +107,25 @@ for(i in c(2,3,6,8,9,10,11,13,14,15,16,19,20,21,22))
   
 }
 
-outbreak_start <- data.frame("id"=c("pittsburgh","quebec","miyazaki","pamplona",
-                                    "rapid city","christchurch","sarpsborg","murcia",
-                                    "melbourne","bovenkarspel","london","philadelphia"),
-                             "start_date"=c("2012-08-26,"))
+outbreak_start <- data.frame("id"=c("bovenkarspel","bronx","christchurch","columbus","genesee1",
+                                    "genesee2","london","melbourne","miyazaki","murcia","pamplona",
+                                    "pittsburgh","quebec","rapid_city","sarpsborg","sydney"),
+                             "start_date"=c("1999-02-25","2015-07-12","2005-04-04","2013-07-09",
+                                            "2014-06-06","2015-05-04","1989-01-01","2000-04-17",
+                                            "2002-07-18","2001-06-26","2006-06-01","2012-08-26",
+                                            "2012-07-18","2005-05-26","2005-05-12","2016-04-25")
+                             )
+
+outbreak_start$start_date <- ymd(outbreak_start$start_date)
+
+
+for(i in 1:length(outbreak_start$start_date)) {
+  a <- as.Date(outbreak_start$start_date[i])
+  b <- a - 14
+  outbreak_start[i,3] <- paste(b)
+  print(outbreak_start)
+}
+
 
 for(file in list.files("weather_files"))
   {
@@ -119,11 +135,6 @@ for(file in list.files("weather_files"))
   ex <- averaged %>%
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
-  
-  all <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
-    facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
-    ggtitle(outbreak_loc$id[i])
-  print(all)
   
   a <- ggplot(ex, aes(x = date, y = value)) + geom_line() +
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
