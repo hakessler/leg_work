@@ -167,9 +167,6 @@ for(file in list.files("weather_files"))
   }
 }
 
-outbreak_start[] <- NULL
-outbreak_start_n <- outbreak_start[,3] <- NULL
-
 #outbreak day of year plot - each hemisphere
 #yday lubridate yday(start_date)
 #ymd to convert
