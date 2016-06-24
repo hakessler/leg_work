@@ -53,9 +53,8 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
 
-station_data <- ghcnd_stations()[[1]]
 
-####DATA####
+####STATIONS####
 
 #df_all is not working correctly
 #df_all <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
@@ -64,15 +63,10 @@ station_data <- ghcnd_stations()[[1]]
                                      #year_min = 1966, year_max = 2015,
                                      #limit = 5)
 
-city_names <- c("portugal","pittsburgh","quebec",
-                  "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
-                  "pamplona","rapid_city","christchurch","sarpsborg",
-                  "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                  "london","stafford","philadelphia","sydney","genesee1",
-                  "genesee2","columbus", "bronx")
+station_data <- ghcnd_stations()[[1]]
 
 df <- list()
-for(i in 1:length(city_names))
+for(i in 1:length(outbreak_loc$id))
   {
     df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
                                     station_data = station_data,
@@ -83,13 +77,13 @@ for(i in 1:length(city_names))
                                     radius = 30))
   }
 
-names(df) <- city_names
+names(df) <- outbreak_loc$id
 stations <- df
 stations
-
-### DATA AND PLOTS ###
-
 has_stations <- sapply(stations, function(x) nrow(x) > 0)
+
+
+#### DATA GATHER & SAVE ####
 
 for(i in which(has_stations))
 {
@@ -107,8 +101,12 @@ for(i in which(has_stations))
   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
   saveRDS(averaged, file_name)
   #readRDS(file_name)
-  
 }
+
+
+###DATA ANALYZE###
+# Only for locations that have >1 stations AND have a listed onset date
+# Files in "weather_files/" are in alphabetical order
 
 outbreak_start <- data.frame("id"=c("bovenkarspel","bronx","christchurch","columbus","genesee1",
                                     "genesee2","london","melbourne","miyazaki","murcia","pamplona",
@@ -125,10 +123,15 @@ for(i in 1:length(outbreak_start$start_date)) {
   outbreak_start[i,3] <- paste(b)
 }
 outbreak_start <- rename(outbreak_start, replace = c("V3"="int_start"))
-ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1) + xlim(c(0,366))
+
+#show outbreak distribution
+outbreak_start$yday <- yday(outbreak_start$start_date)
+outbreak_start$hemisphere <- c("N","N","S","N","N","N","N","S","N","N","N","N","N","N","N","S")
+ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1) + 
+  xlim(c(0,366)) + facet_grid(. ~ hemisphere)
 
 
-
+####PLOTS####
 for(file in list.files("weather_files"))
   {
   city_name <- gsub(".rds", "", file)
@@ -181,6 +184,8 @@ for(file in list.files("weather_files"))
 # x = 14 days, y = percentiles, all cities
 
 #9:30 wed, 6th
+
+#?articles
 
 #outbreak day of year plot - each hemisphere - facetting
 #add column n and s
