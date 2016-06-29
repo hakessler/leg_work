@@ -12,47 +12,53 @@ library(lubridate)
 
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
-                                  "pamplona","rapid city","christchurch","sarpsborg",
+                                  "pamplona","rapid city","sarpsborg",
                                   "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                                  "london","stafford","philadelphia", "sydney","genesee1",
-                                  "genesee2","columbus", "bronx"),
+                                  "london","sydney","genesee1","genesee2","columbus", "bronx"),
                            "file_id" = c("portugal","pittsburgh","quebec",
                                          "stoke_on_trent","edinburgh","miyazaki","pas_de_calais",
-                                         "pamplona","rapid_city","christchurch","sarpsborg",
-                                         "barrow_in_furness","murcia","melbourne","bovenkarspel",
-                                         "london","stafford","philadelphia","sydney","genesee1",
-                                         "genesee2","columbus", "bronx"),
+                                         "pamplona","rapid_city","sarpsborg","barrow_in_furness",
+                                         "murcia","melbourne","bovenkarspel","london","sydney",
+                                         "genesee1","genesee2","columbus","bronx"),
                            "latitude" = c(38.96, 40.43, 46.85, 53.02, 55.94,
-                                          31.89, 50.51, 42.81, 44.06, -43.51,
-                                          59.28, 54.10, 37.98, -37.86, 52.7,
-                                          51.52, 52.80, 40.00, -33.85, 43.09,
-                                          43.09, 39.98, 40.82),
+                                          31.89, 50.51, 42.81, 44.06, 59.28,
+                                          54.10, 37.98,-37.86, 52.70, 51.52,
+                                         -33.85, 43.09, 43.09, 39.98, 40.82),
                            "longitude" = c(-8.99, -79.98, -71.34, -2.15, -3.20,
-                                           131.34, 2.37, -1.65, -103.22,
-                                           172.59, 11.08, -3.22, -1.12,
-                                           145.07, 5.24, -0.10, -2.10, -75.11,
+                                           131.34, 2.37, -1.65, -103.22, 11.08, 
+                                           -3.22, -1.12, 145.07, 5.24, -0.10,
                                            150.93, -83.63, -83.63, -82.99, -73.92),
                            "year_min" = c(2004, 2002, 2002, 2002, 2002, 1992, 
-                                          1993, 1996, 1995, 1995, 1995, 1992, 
-                                          1991, 1990, 1989, 1979, 1975, 1966,
-                                          2006, 2004, 2005, 2003, 2005),
+                                          1993, 1996, 1995, 1995, 1992, 1991, 
+                                          1990, 1989, 1979, 2006, 2004, 2005,
+                                          2003, 2005),
                            "date_min" = c("2004-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "2002-01-01", "1992-01-01", 
-                                          "1993-01-01", "1996-01-01", "1995-01-01", "1995-01-01", "1995-01-01", "1992-01-01", 
-                                          "1991-01-01", "1990-01-01", "1989-01-01", "1979-01-01", "1975-01-01", "1966-01-01",
-                                          "2006-01-01", "2004-01-01", "2005-01-01", "2003-01-01", "2005-01-01"),
+                                          "1993-01-01", "1996-01-01", "1995-01-01", "1995-01-01", "1992-01-01", "1991-01-01", 
+                                          "1990-01-01", "1989-01-01", "1979-01-01", "2006-01-01", "2004-01-01", "2005-01-01",
+                                          "2003-01-01", "2005-01-01"),
                            "year_max" = c(2014, 2012, 2012, 2012, 2012, 2002,
-                                          2003, 2006, 2005, 2005, 2005, 2002,
-                                          2001, 2000, 1999, 1989, 1985, 1976,
-                                          2016, 2014, 2015, 2013, 2015),
+                                          2003, 2006, 2005, 2005, 2002, 2001,
+                                          2000, 1999, 1989, 2016, 2014, 2015,
+                                          2013, 2015),
                            "date_max" = c("2014-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2012-12-31", "2002-12-31",
-                                          "2003-12-31", "2006-12-31", "2005-12-31", "2005-12-31", "2005-12-31", "2002-12-31",
-                                          "2001-12-31", "2000-12-31", "1999-12-31", "1989-12-31", "1985-12-31", "1976-12-31",
-                                          "2016-12-31", "2014-12-31", "2015-12-31", "2013-12-31", "2015-12-31")
+                                          "2003-12-31", "2006-12-31", "2005-12-31", "2005-12-31", "2002-12-31", 
+                                          "2001-12-31", "2000-12-31", "1999-12-31", "1989-12-31", "2016-12-31", 
+                                          "2014-12-31", "2015-12-31", "2013-12-31", "2015-12-31"),
+                           "onset" = c("2004-10-14", "2012-08-26", "2012-07-18", "2012-07-02", "2012-05-01",
+                                       "2002-07-18", "2003-11-28", "2006-06-01", "2005-05-26", "2005-05-12",
+                                       "2002-07-30", "2001-06-26", "2000-04-17", "1999-02-25", "1989-01-01",
+                                       "2016-04-25", "2014-06-06", "2015-05-04", "2013-07-09", "2015-07-12")
                            )
 
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
-
+outbreak_loc$onset <- ymd(outbreak_loc$onset)
+for(i in 1:length(outbreak_loc$onset)) {
+  a <- as.Date(outbreak_loc$onset[i])
+  b <- a - 14
+  outbreak_loc[i,10] <- paste(b)
+}
+outbreak_loc <- rename(outbreak_loc, replace = c("V10"="14d_before"))
 
 ####STATIONS####
 
@@ -81,6 +87,9 @@ names(df) <- outbreak_loc$id
 stations <- df
 stations
 has_stations <- sapply(stations, function(x) nrow(x) > 0)
+outbreak_loc$stations <- paste0(outbreak_loc$stations, has_stations)
+# Shows only locations with stations 
+outbreak_loc_true <- outbreak_loc[ !grepl("FALSE", outbreak_loc$stations) , ]
 
 
 #### DATA GATHER & SAVE ####
@@ -105,29 +114,14 @@ for(i in which(has_stations))
 
 
 ###DATA ANALYZE###
-# Only for locations that have >1 stations AND have a listed onset date
+# Only for locations that have >1 stations
 # Files in "weather_files/" are in alphabetical order
-
-outbreak_start <- data.frame("id"=c("bovenkarspel","bronx","christchurch","columbus","genesee1",
-                                    "genesee2","london","melbourne","miyazaki","murcia","pamplona",
-                                    "pittsburgh","quebec","rapid_city","sarpsborg","sydney"),
-                             "start_date"=c("1999-02-25","2015-07-12","2005-04-04","2013-07-09",
-                                            "2014-06-06","2015-05-04","1989-01-01","2000-04-17",
-                                            "2002-07-18","2001-06-26","2006-06-01","2012-08-26",
-                                            "2012-07-18","2005-05-26","2005-05-12","2016-04-25")
-                             )
-outbreak_start$start_date <- ymd(outbreak_start$start_date)
-for(i in 1:length(outbreak_start$start_date)) {
-  a <- as.Date(outbreak_start$start_date[i])
-  b <- a - 14
-  outbreak_start[i,3] <- paste(b)
-}
-outbreak_start <- rename(outbreak_start, replace = c("V3"="int_start"))
+df_stations <- arrange(outbreak_loc_true, id)
 
 #show outbreak distribution
-outbreak_start$yday <- yday(outbreak_start$start_date)
-outbreak_start$hemisphere <- c("N","N","S","N","N","N","N","S","N","N","N","N","N","N","N","S")
-ggplot(outbreak_start, aes(yday)) + geom_histogram(binwidth = 1) + 
+df_stations$yday <- yday(df_stations$onset)
+df_stations$hemisphere <- c("N","N","N","N","N","N","S","N","N","N","N","N","N","N","S")
+ggplot(df_stations, aes(yday)) + geom_histogram(binwidth = 1) + 
   xlim(c(0,366)) + facet_grid(. ~ hemisphere)
 
 
