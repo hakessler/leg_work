@@ -58,7 +58,7 @@ for(i in 1:length(outbreak_loc$onset)) {
   b <- a - 14
   outbreak_loc[i,10] <- paste(b)
 }
-outbreak_loc <- rename(outbreak_loc, replace = c("V10"="14d_before"))
+outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
 
 ####STATIONS####
 
@@ -93,6 +93,7 @@ outbreak_loc_true <- outbreak_loc[ !grepl("FALSE", outbreak_loc$stations) , ]
 
 
 #### DATA GATHER & SAVE ####
+# Only need to run once to save the data 
 
 for(i in which(has_stations))
 {
@@ -147,7 +148,7 @@ for(file in list.files("weather_files"))
   
   }
 
-
+#Loop still not functioning
 for(file in list.files("weather_files"))
 {
   city_name <- gsub(".rds", "", file)
@@ -157,31 +158,29 @@ for(file in list.files("weather_files"))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
-  for(i in 1:length(outbreak_start$id)) {
+  for(i in 1:length(df_stations$id)) {
     c_plot <- filter(ex, metric %in% c("prcp"))
-    int <- interval(ymd(outbreak_start$int_start[i]), ymd(outbreak_start$start_date[i]))
-    c_outbreak <- filter(c_plot, date %within% int) %>%
-      mutate(day_in_seq = 1:nrow(c_outbreak))
+    int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+    c_outbreak <- filter(c_plot, date %within% int) #%>%
+    c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
     c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 1) +
        geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25)
     print(c)
+    
+    #percentiles
+    city_percentile <- ecdf(ex$value)(c_outbreak$value)
+    c_outbreak$percentile <- city_percentile * 100
+    
+    d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
+           geom_bar(stat="identity") +
+           ggtitle(city_name)
+    ptine(d)
+    
+    #Return to first loop, not the nested?
   }
 }
 
-# 2 week values into percentile
-#?edcf({all precp values})({values to test})
-# city_ecdf <- ecdf({prcp values all})
-# df$percentile <- city_ecdf(value)
-#plot for all cities
-# x = 14 days, y = percentiles, all cities
-
-#9:30 wed, 6th
 
 #?articles
-
-#outbreak day of year plot - each hemisphere - facetting
-#add column n and s
-#yday lubridate yday(start_date)
-#ymd to convert
