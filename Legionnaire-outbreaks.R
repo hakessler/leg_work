@@ -169,6 +169,10 @@ for(file in list.files("weather_files"))
                   alpha = 0.25)
     print(c)
     
+    
+  }
+}
+    
     #percentiles
     city_percentile <- ecdf(ex$value)(c_outbreak$value)
     c_outbreak$percentile <- city_percentile * 100
@@ -182,5 +186,9 @@ for(file in list.files("weather_files"))
   }
 }
 
+
+
+
+#9:30 wed, 6th
 
 #?articles
