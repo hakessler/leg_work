@@ -90,13 +90,14 @@ has_stations <- sapply(stations, function(x) nrow(x) > 0)
 outbreak_loc$stations <- paste0(outbreak_loc$stations, has_stations)
 # Shows only locations with stations 
 outbreak_loc_true <- outbreak_loc[ !grepl("FALSE", outbreak_loc$stations) , ]
+outbreak_loc_true$stations <- NULL
 
 
 #### DATA GATHER & SAVE ####
 # Only need to run once to save the data 
 
-for(i in which(has_stations))
-{
+#for(i in which(has_stations))
+#{
    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
                                 keep_flags = FALSE,
                                 date_min = outbreak_loc$date_min[i],
@@ -119,14 +120,16 @@ for(i in which(has_stations))
 # Files in "weather_files/" are in alphabetical order
 df_stations <- arrange(outbreak_loc_true, id)
 
-#show outbreak distribution
+
+####PLOTS####
+
+# PLOT 1: show outbreak distribution
 df_stations$yday <- yday(df_stations$onset)
 df_stations$hemisphere <- c("N","N","N","N","N","N","S","N","N","N","N","N","N","N","S")
 ggplot(df_stations, aes(yday)) + geom_histogram(binwidth = 1) + 
   xlim(c(0,366)) + facet_grid(. ~ hemisphere)
 
-
-####PLOTS####
+#PLOT 2: All weather data facetted 
 for(file in list.files("weather_files"))
   {
   city_name <- gsub(".rds", "", file)
@@ -140,7 +143,7 @@ for(file in list.files("weather_files"))
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
   print(a)
-  
+
   to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
@@ -148,9 +151,10 @@ for(file in list.files("weather_files"))
   
   }
 
-#Loop still not functioning
-for(file in list.files("weather_files"))
+# PLOT 4: PRCP
+for(i in 1:length(list.files("weather_files")))
 {
+  file <- list.files("weather_files")[i]
   city_name <- gsub(".rds", "", file)
   averaged <- readRDS(paste0("weather_files/", file))
   
@@ -158,20 +162,17 @@ for(file in list.files("weather_files"))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
-  for(i in 1:length(df_stations$id)) {
     c_plot <- filter(ex, metric %in% c("prcp"))
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 1) +
-       geom_vline(data = c_outbreak, 
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.2) +
+         geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
-                  alpha = 0.25)
+                  alpha = 0.25) + 
+         xlim(c(0,20)) + ylim(c(0, 300)) +
+         ggtitle(city_name)
     print(c)
-    
-    
-  }
-}
     
     #percentiles
     city_percentile <- ecdf(ex$value)(c_outbreak$value)
@@ -179,16 +180,82 @@ for(file in list.files("weather_files"))
     
     d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
            geom_bar(stat="identity") +
-           ggtitle(city_name)
-    ptine(d)
+           ggtitle(city_name) +
+           ylim(c(0,100))
+    print(d)
     
-    #Return to first loop, not the nested?
   }
+
+# PLOT 5: TMAX
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  c_plot <- filter(ex, metric %in% c("tmax"))
+  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  c_outbreak <- filter(c_plot, date %within% int) #%>%
+  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
+  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
+    geom_vline(data = c_outbreak, 
+               aes(xintercept = value, color = day_in_seq), 
+               alpha = 0.25) + 
+    xlim(c(0,50)) + ylim(c(0, 300)) +
+    ggtitle(city_name)
+  print(c)
+  
+  #percentiles
+  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  c_outbreak$percentile <- city_percentile * 100
+  
+  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
 }
 
+# PLOT 6: TMIN
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  c_plot <- filter(ex, metric %in% c("tmin"))
+  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  c_outbreak <- filter(c_plot, date %within% int) #%>%
+  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
+  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
+    geom_vline(data = c_outbreak, 
+               aes(xintercept = value, color = day_in_seq), 
+               alpha = 0.25) + 
+    xlim(c(-10,30)) + ylim(c(0, 300)) +
+    ggtitle(city_name)
+  print(c)
+  
+  #percentiles
+  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  c_outbreak$percentile <- city_percentile * 100
+  
+  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
 
+}
 
+# PLOT 7: SNWD
 
-#9:30 wed, 6th
 
 #?articles
