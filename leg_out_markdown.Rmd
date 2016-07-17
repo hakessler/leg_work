@@ -172,7 +172,7 @@ ggplot(df_stations, aes(yday)) + geom_histogram(binwidth = 1) +
 
 These plots allow for a quick glance into all the weather variables for each location. 
 
-```{r, echo = False }
+```{r, echo=FALSE }
 for(file in list.files("weather_files"))
   {
   city_name <- gsub(".rds", "", file)
