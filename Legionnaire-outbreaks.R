@@ -144,6 +144,7 @@ for(file in list.files("weather_files"))
     ggtitle(city_name)
   print(a)
 
+  #PLOT 3
   to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
@@ -166,12 +167,13 @@ for(i in 1:length(list.files("weather_files")))
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.2) +
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5) +
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
          xlim(c(0,20)) + ylim(c(0, 300)) +
-         ggtitle(city_name)
+         ggtitle(city_name) 
+         
     print(c)
     
     #percentiles
@@ -254,6 +256,7 @@ for(i in 1:length(list.files("weather_files")))
   print(d)
 
 }
+
 
 # PLOT 7: SNWD
 
