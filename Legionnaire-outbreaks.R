@@ -1,5 +1,5 @@
-#install_github("ropenscilabs/rnoaa")
 library(devtools)
+install_github("ropenscilabs/rnoaa")
 library(rnoaa)
 library(countyweather)
 library(dplyr)
@@ -102,12 +102,12 @@ outbreak_loc_true$stations <- NULL
 #                                 date_min = outbreak_loc$date_min[i],
 #                                 date_max = outbreak_loc$date_max[i],
 #                                 var = c("prcp","snow","snwd","tmax","tmin","tavg"))
-#   coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
-#   filtered <- filter_coverage(coverage_df, 0.90)
+
+#   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
+#   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
 #   good_monitors <- unique(filtered$id)
-#   filtered_data <- filter(meteo_df, id %in% good_monitors)
-#   averaged <- ave_weather(filtered_data)
-# 
+#   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
+#   averaged <- countyweather:::ave_weather(filtered_data)
 #   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
 #   saveRDS(averaged, file_name)
 #   #readRDS(file_name)
