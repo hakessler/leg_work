@@ -169,10 +169,9 @@ for(i in 1:length(list.files("weather_files")))
     c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.5) +
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
-                  alpha = 0.25, size = 2) + 
+                  alpha = 0.25) + 
          xlim(c(0,20)) + ylim(c(0, 300)) +
-         ggtitle(city_name) + 
-      scale_colour_gradientn(colours=rainbow(4))
+         ggtitle(city_name) 
          
     print(c)
     
