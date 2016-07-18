@@ -174,7 +174,8 @@ for(i in 1:length(list.files("weather_files")))
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
          xlim(c(0,20)) + ylim(c(0, 300)) +
-         ggtitle(city_name) 
+         ggtitle(city_name) + 
+      scale_colour_gradientn(colours=rainbow(4))
          
     print(c)
     
