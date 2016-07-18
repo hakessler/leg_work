@@ -1,7 +1,6 @@
-#install_github("ropenscilabs/rnoaa")
 library(devtools)
+install_github("ropenscilabs/rnoaa")
 library(rnoaa)
-library(ggmap)
 library(countyweather)
 library(dplyr)
 library(plyr)
@@ -69,7 +68,6 @@ outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
                                      #year_min = 1966, year_max = 2015,
                                      #limit = 5)
 
-library(rnoaa)
 station_data <- ghcnd_stations()[[1]]
 
 df <- list()
@@ -97,24 +95,23 @@ outbreak_loc_true$stations <- NULL
 #### DATA GATHER & SAVE ####
 # Only need to run once to save the data 
 
-library(countyweather)
-# for(i in which(has_stations))
+#for(i in which(has_stations))
 # {
 #    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
 #                                 keep_flags = FALSE,
 #                                 date_min = outbreak_loc$date_min[i],
 #                                 date_max = outbreak_loc$date_max[i],
 #                                 var = c("prcp","snow","snwd","tmax","tmin","tavg"))
+
 #   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
 #   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
 #   good_monitors <- unique(filtered$id)
 #   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
 #   averaged <- countyweather:::ave_weather(filtered_data)
-# 
 #   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
 #   saveRDS(averaged, file_name)
 #   #readRDS(file_name)
-# }
+#  }
 
 
 ###DATA ANALYZE###
@@ -245,7 +242,8 @@ for(i in 1:length(list.files("weather_files")))
                aes(xintercept = value, color = day_in_seq), 
                alpha = 0.25) + 
     xlim(c(-10,30)) + ylim(c(0, 300)) +
-    ggtitle(city_name)
+    ggtitle(city_name) +
+    scale_color_gradientn(colors=rainbow(4))
   print(c)
   
   #percentiles
@@ -263,5 +261,6 @@ for(i in 1:length(list.files("weather_files")))
 
 # PLOT 7: SNWD
 
-
-#?articles
+# log scale 
+# riem, first find station number
+# riem_networks
