@@ -144,13 +144,22 @@ for(file in list.files("weather_files"))
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
   print(a)
+}
+  #PLOT 3: TMAX and TMIN
+  for(file in list.files("weather_files"))
+  {
+    city_name <- gsub(".rds", "", file)
+    averaged <- readRDS(paste0("weather_files/", file))
+    
+    ex <- averaged %>%
+      select(-ends_with("reporting")) %>%
+      gather("metric", "value", -date)
   
-  #PLOT 3
-  to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
-  b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
+    to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
+    b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
-  print(b)
-  
+   print(b)
+   
   }
 
 # PLOT 4: PRCP
@@ -259,12 +268,55 @@ for(i in 1:length(list.files("weather_files")))
 
 }
 
+###DATA CLEANUP####
+# London has one date in which the prcp is an outlier. That date is 1979-08-10 
+# in which the prcp is 255 in. I am trying to find another source to replace 
+# that date. So far I haven't found any data using riem_networks. None of the
+# stations go back very far. I think EGPD only goes to back to 2014. 
 
-# Look into London temperatures - has TAVG, use instead?
-# Sarpsborg missing temperatures 
+library(knitr)
+riem_networks() %>% knitr::kable()
+riem_stations(network = "GB__ASOS") %>% kable()
+riem_measures(station = "EGPD", date_start = "1979-08-09", date_end = "1979-08-11") %>% head() %>% kable()
+
+# London also has a bunch of missing temperatures, but has information on TAVG 
+# which I could use instead.
+
+# Sarpsborg missing temperatures. I may be able to use riem data to fill
+riem_stations(network = "NO__ASOS") %>% knitr::kable()
+
+#bovenkarspel missing temperatures 
+
+#miyazaki has some wacky prcp values. It may be reported in a different unit.
+# I tried to multiply the data by 0.1 and plotting but there appears to be a 
+# lot of missing prcp values 
+file <- list.files("weather_files")[8]
+city_name <- gsub(".rds", "", file)
+averaged <- readRDS(paste0("weather_files/", file))
+
+ex <- averaged %>%
+  select(-ends_with("reporting")) %>%
+  gather("metric", "value", -date)
+
+plot <- filter(ex, metric %in% c("prcp"))
+plot$value <- plot$value * 0.1
+ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle("miyazaki prcp")
+
+# Murcia has one high prcp day on 2000-20-23.
+
+# Pittsburgh PRCP 
+file <- list.files("weather_files")[11]
+city_name <- gsub(".rds", "", file)
+averaged <- readRDS(paste0("weather_files/", file))
+
+ex <- averaged %>%
+  select(-ends_with("reporting")) %>%
+  gather("metric", "value", -date)
+
+plot <- filter(ex, metric %in% c("prcp"))
+plot$value <- plot$value * 0.1
+ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
 
 # M 4:00-4:30
 
 # log scale 
-# riem, first find station number
-# riem_networks
