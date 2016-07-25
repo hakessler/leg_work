@@ -1,6 +1,7 @@
 library(devtools)
-install_github("ropenscilabs/rnoaa")
-
+#install_github("ropenscilabs/rnoaa")
+#install_github("ropenscilabs/riem")
+library(riem)
 library(rnoaa)
 library(countyweather)
 library(dplyr)
@@ -143,7 +144,7 @@ for(file in list.files("weather_files"))
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
   print(a)
-
+  
   #PLOT 3
   to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
   b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
@@ -259,7 +260,8 @@ for(i in 1:length(list.files("weather_files")))
 }
 
 
-# PLOT 7: SNWD
+# Look into London temperatures - has TAVG, use instead?
+# Sarpsborg missing temperatures 
 
 # M 4:00-4:30
 
