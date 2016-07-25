@@ -19,7 +19,6 @@ install_github("ropenscilabs/rnoaa")
 ```{r, message=FALSE}
 library(devtools)
 library(rnoaa)
-library(ggmap)
 library(countyweather)
 library(dplyr)
 library(plyr)

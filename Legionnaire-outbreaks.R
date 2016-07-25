@@ -252,7 +252,7 @@ for(i in 1:length(list.files("weather_files")))
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
     geom_bar(stat="identity") +
-    ggtitle(city_name) +
+    ggtitle(paste(city_name, "TMIN")) +
     ylim(c(0,100))
   print(d)
 
@@ -260,6 +260,8 @@ for(i in 1:length(list.files("weather_files")))
 
 
 # PLOT 7: SNWD
+
+# M 4:00-4:30
 
 # log scale 
 # riem, first find station number
