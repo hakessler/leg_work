@@ -1,0 +1,71 @@
+---
+title: Short Paper
+author:
+  - name: Alice Anonymous
+    email: alice@example.com
+    affiliation: Some Institute of Technology
+    footnote: Corresponding Author
+  - name: Bob Security
+    email: bob@example.com
+    affiliation: Another University
+address:
+  - code: Some Institute of Technology
+    address: Department, Street, City, State, Zip
+  - code: Another University
+    address: Department, Street, City, State, Zip
+abstract: |
+  This is the abstract.
+
+  It consists of two paragraphs.
+
+bibliography: mybibfile.bib
+output: rticles::elsevier_article
+---
+
+
+
+Literature Review 
+==========================
+
+#### Brandsema 
+
+LD incubation period is 2-10 days but can sometimes be a max of 19 days. This study looked at a 14 day incubation period. 
+
+"Meteorological data were obtained from the Royal Netherlands Meteorological Institute (KNMI) for the weather station in De Bilt". The variables analyzed were the mean weekly value for temperature, relative humidity, cloudiness, precipitation, and rainfall intensity.
+
+Used percentiles
+
+Found temperature but not humidity or precipitation was associated 
+
+#### Fisman
+
+Analyzed month of occurence of case, not onset date. Stated that onset time for LD is 2-10 days
+
+meteorological data were obtained from airport weather stations in
+Montgomery County (Willow Grove Naval Air Station) and
+Philadelphia County (Philadelphia International Airport)
+
+#### Halsby 
+
+Weather data were obtained from Met Office Land
+Surface Observation Stations Data (‘MIDAS’ – Met
+Office Integrated Data Archive System) held by the
+British Atmospheric Data Centre
+
+temperature by a linear threshold
+model, with the threshold at the 25th centile (11·35 °C;
+lag 0–9 weeks)
+
+
+
+
+Quality analysis of data
+===================
+
+#### TMIN and TMAX
+
+Sarsborg is missing this data from around December 1996 to around May 1999
+
+
+
+==========

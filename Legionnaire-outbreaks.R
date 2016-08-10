@@ -173,6 +173,12 @@ for(i in 1:length(list.files("weather_files")))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
+  to_plot <- filter(ex, metric=="prcp")
+  to_plot$value <- to_plot$value * 0.1
+  b <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
+    geom_line() + ggtitle(city_name)
+  print(b)
+  
     c_plot <- filter(ex, metric %in% c("prcp"))
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
@@ -181,9 +187,9 @@ for(i in 1:length(list.files("weather_files")))
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
-         xlim(c(0,20)) + ylim(c(0, 300)) +
-         ggtitle(city_name) 
-         
+         #xlim(c(0,20)) + ylim(c(0, 300)) +
+         ggtitle(city_name) + scale_color_gradientn(colors=rainbow(4))
+             
     print(c)
     
     #percentiles
@@ -299,12 +305,14 @@ ex <- averaged %>%
   gather("metric", "value", -date)
 
 plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value * 0.1
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle("miyazaki prcp")
+plot$value <- plot$value 
+ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle("miyazaki tmax")
 
 # Murcia has one high prcp day on 2000-20-23.
 
 # Pittsburgh PRCP 
+# http://www.weather.gov/media/pbz/records/prec.pdf
+# 2004-09-18 is the date with a prcp of 9.8
 file <- list.files("weather_files")[11]
 city_name <- gsub(".rds", "", file)
 averaged <- readRDS(paste0("weather_files/", file))
@@ -317,6 +325,18 @@ plot <- filter(ex, metric %in% c("prcp"))
 plot$value <- plot$value * 0.1
 ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
 
-# M 4:00-4:30
+#Rapid City
+file <- list.files("weather_files")[14]
+city_name <- gsub(".rds", "", file)
+averaged <- readRDS(paste0("weather_files/", file))
 
-# log scale 
+ex <- averaged %>%
+  select(-ends_with("reporting")) %>%
+  gather("metric", "value", -date)
+
+plot <- filter(ex, metric %in% c("prcp"))
+plot$value <- plot$value * 0.1
+ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
+filter(plot, value >5.0)
+
+#W august 10, 9:30
