@@ -125,7 +125,7 @@ outbreak_loc_true
 
 Using the countyweather codes I can gather the data for each station in a loop. The code gathers the weather data for each stations and averages them. Then I saved all the data as rds. files because they take a long time to gather. The data is saved in a folder I created called "weather_files/"
 
-```{r}
+```{r, eval=FALSE}
 for(i in which(has_stations))
 {
     meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
