@@ -125,24 +125,24 @@ outbreak_loc_true
 
 Using the countyweather codes I can gather the data for each station in a loop. The code gathers the weather data for each stations and averages them. Then I saved all the data as rds. files because they take a long time to gather. The data is saved in a folder I created called "weather_files/"
 
-```{r, eval=FALSE}
+```{r}
 for(i in which(has_stations))
 {
-   meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
-                                keep_flags = FALSE,
-                                date_min = outbreak_loc$date_min[i],
-                                date_max = outbreak_loc$date_max[i],
-                                var = c("prcp","snow","snwd","tmax","tmin","tavg"))
-  coverage_df <- meteo_coverage(meteo_df, verbose = FALSE)
-  filtered <- filter_coverage(coverage_df, 0.90)
-  good_monitors <- unique(filtered$id)
-  filtered_data <- filter(meteo_df, id %in% good_monitors)
-  averaged <- ave_weather(filtered_data)
+    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
+                                 keep_flags = FALSE,
+                                 date_min = outbreak_loc$date_min[i],
+                                 date_max = outbreak_loc$date_max[i],
+                                 var = c("prcp","snow","snwd","tmax","tmin","tavg"))
 
-  file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
-  saveRDS(averaged, file_name)
-  #readRDS(file_name)
-}
+   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
+   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
+   good_monitors <- unique(filtered$id)
+   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
+   averaged <- countyweather:::ave_weather(filtered_data)
+   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
+   saveRDS(averaged, file_name)
+   #readRDS(file_name)
+  }
 
 ```
 
