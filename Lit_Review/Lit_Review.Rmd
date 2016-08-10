@@ -64,7 +64,29 @@ Quality analysis of data
 
 #### TMIN and TMAX
 
-Sarsborg is missing this data from around December 1996 to around May 1999
+Sarsborg is missing this data from around December 1996 to around May 1999. I checked the minimum temperature on the 2002-12-31 where the min was -26 C. However, I cross checked this with weather underground and general record temperatures for Sarpsborg and have not found an agreeing source. 
+
+Pittsburgh had two dates on 2009-01-17 and 2009-01-16 that were lows at -21 C. This is in fact correct. 
+
+I crossed checked the 1995 high temperature in Murcia and that appears to be correct 
+
+Miyazaki has a lot of missing temperatures. 
+
+London has a lot of missing temperatures 
+
+
+Both genesee locations appear to have similar weather which is good. 
+
+Bovenkarspel is missing temperatures from the start to around July 1990. 
+
+
+#### PRCP
+
+Miyazaki has a lot of missing prcp data
+
+
+London has a value that is somehow extremely high and is an outlier 
+
 
 
 
