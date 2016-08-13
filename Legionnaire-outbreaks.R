@@ -48,8 +48,8 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                            "onset" = c("2004-10-14", "2012-08-26", "2012-07-18", "2012-07-02", "2012-05-01",
                                        "2002-07-18", "2003-11-28", "2006-06-01", "2005-05-26", "2005-05-12",
                                        "2002-07-30", "2001-06-26", "2000-04-17", "1999-02-25", "1989-01-01",
-                                       "2016-04-25", "2014-06-06", "2015-05-04", "2013-07-09", "2015-07-12")
-                           )
+                                       "2016-04-25", "2014-06-06", "2015-05-04", "2013-07-09", "2015-07-12"),
+                           stringsAsFactors = FALSE)
 
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
@@ -59,16 +59,16 @@ for(i in 1:length(outbreak_loc$onset)) {
   b <- a - 14
   outbreak_loc[i,10] <- paste(b)
 }
-outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
+outbreak_loc <- dplyr::rename(outbreak_loc, before_onset = V10)
 
 ####STATIONS####
 
 #df_all is not working correctly
-#df_all <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
-                                     #station_data = station_data,
-                                     #var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
-                                     #year_min = 1966, year_max = 2015,
-                                     #limit = 5)
+# df_all <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
+# station_data = station_data,
+# var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
+# year_min = 1966, year_max = 2015,
+# limit = 5)
 
 station_data <- ghcnd_stations()[[1]]
 
