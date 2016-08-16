@@ -220,7 +220,29 @@ for(file in list.files("weather_files"))
 
 I also made a loop to plot graphs and histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days.A plot of the percentiles is also included.
 
-```{r, echo=FALSE, warning=FALSE, message=FALSE}
+```{r, echo=FALSE}
+
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  to_plot <- filter(ex, metric=="prcp")
+  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
+    geom_line() + ggtitle(city_name)
+  print(a)
+  
+}
+
+```
+
+
+```{r, echo=FALSE, eval=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
