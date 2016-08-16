@@ -4,8 +4,8 @@ library(devtools)
 library(riem)
 library(rnoaa)
 library(countyweather)
-library(dplyr)
 library(plyr)
+library(dplyr)
 library(tidyr)
 library(weathermetrics)
 library(ggplot2)
@@ -174,17 +174,15 @@ for(i in 1:length(list.files("weather_files")))
     gather("metric", "value", -date)
   
   to_plot <- filter(ex, metric=="prcp")
-  to_plot$value <- to_plot$value * 0.1
   a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
     geom_line() + ggtitle(city_name)
   print(a)
   
     c_plot <- filter(ex, metric=="prcp")
-    c_plot$value <- c_plot$value * 0.1
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.1) +
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
@@ -355,47 +353,7 @@ plot$value <- plot$value * 0.1
 ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
 filter(plot, value >5.0)
 
-#W august 10, 9:30
 
 
-for(i in 1:length(list.files("weather_files")))
-{
-  file <- list.files("weather_files")[i]
-  city_name <- gsub(".rds", "", file)
-  averaged <- readRDS(paste0("weather_files/", file))
-  
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-  
-  to_plot <- filter(ex, metric=="prcp")
-  to_plot$value <- to_plot$value * 0.1
-  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
-    geom_line() + ggtitle(city_name)
-  print(a)
-  
-  c_plot <- filter(ex, metric=="prcp")
-  c_plot$value <- c_plot$value * 0.1
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
-  c_outbreak <- filter(c_plot, date %within% int) #%>%
-  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.1) +
-    geom_vline(data = c_outbreak, 
-               aes(xintercept = value, color = day_in_seq), 
-               alpha = 0.25) + 
-    ggtitle(city_name) + xlab("PRCP (mm)") +
-    scale_color_gradientn(colors=rainbow(4))
-  
-  print(c)
-  
-  #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
-  c_outbreak$percentile <- city_percentile * 100
-  
-  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
-    geom_bar(stat="identity") +
-    ggtitle(city_name) +
-    ylim(c(0,100))
-  print(d)
-  
-}
+#spDists
+#geosphere

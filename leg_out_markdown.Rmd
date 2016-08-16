@@ -14,9 +14,11 @@ The coordinates of the Legionnairess Disease outbreaks will be used to gather we
 First I installed and downloaded the packages needed including rnoaa from github.
 
 ```{r, eval=FALSE}
+library(devtools)
 install_github("ropenscilabs/rnoaa")
 install_github("ropenscilabs/riem")
 ```
+
 ```{r, message=FALSE}
 library(devtools)
 library(rnoaa)
@@ -33,7 +35,6 @@ library(lubridate)
 I created a data frame including the locations of each outbreak. I found the coordinates at http://maps.cga.harvard.edu/gpf/ and crossed checked them with Google coordinates. The other data in this set are year of outbreak and the year 10 years before the outbreak, onset date, and 14 days before the onset date. 
 
 ```{r,echo=FALSE}
-
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
                                   "pamplona","rapid city","sarpsborg",
@@ -84,7 +85,6 @@ for(i in 1:length(outbreak_loc$onset)) {
 }
 outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
 outbreak_loc
-
 ```
 
 The next function will download information from all of the stations. It only needs to be downloaded once per session. It will take a couple minutes to download
@@ -187,7 +187,7 @@ for(file in list.files("weather_files"))
     facet_wrap(~ metric, ncol = 2, scales = "free_y") + 
     ggtitle(city_name)
   print(a)
-}  
+}
 
 ```
 
@@ -220,7 +220,7 @@ for(file in list.files("weather_files"))
 
 I also made a loop to plot graphs and histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days.A plot of the percentiles is also included.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -232,17 +232,15 @@ for(i in 1:length(list.files("weather_files")))
     gather("metric", "value", -date)
   
   to_plot <- filter(ex, metric=="prcp")
-  to_plot$value <- to_plot$value * 0.1
   a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
     geom_line() + ggtitle(city_name)
   print(a)
   
     c_plot <- filter(ex, metric=="prcp")
-    c_plot$value <- c_plot$value * 0.1
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.1) +
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
@@ -250,25 +248,49 @@ for(i in 1:length(list.files("weather_files")))
          scale_color_gradientn(colors=rainbow(4))
              
     print(c)
-    
-    #percentiles
-    city_percentile <- ecdf(ex$value)(c_outbreak$value)
-    c_outbreak$percentile <- city_percentile * 100
-    
-    d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
-           geom_bar(stat="identity") +
-           ggtitle(city_name) +
-           ylim(c(0,100))
-    print(d)
-    
-  }
+
+}
+
 ```
+
+
+```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+for(i in 1:length(list(1:16)
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  to_plot <- filter(ex, metric=="prcp")
+  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
+    geom_line() + ggtitle(city_name)
+  print(a)
+  
+    c_plot <- filter(ex, metric=="prcp")
+    int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+    c_outbreak <- filter(c_plot, date %within% int) #%>%
+    c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
+         geom_vline(data = c_outbreak, 
+                  aes(xintercept = value, color = day_in_seq), 
+                  alpha = 0.25) + 
+         ggtitle(city_name) + xlab("PRCP (mm)") +
+         scale_color_gradientn(colors=rainbow(4))
+             
+    print(c)
+}
+```
+
 
 
 # PLOT 5
 ## TMAX
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -315,7 +337,7 @@ for(i in 1:length(list.files("weather_files")))
 # PLOT 6
 ## TMIN
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -358,4 +380,6 @@ for(i in 1:length(list.files("weather_files")))
 
 }
 ```
+
+
 
