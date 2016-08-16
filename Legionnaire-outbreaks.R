@@ -305,55 +305,6 @@ riem_measures(station = "EGPD", date_start = "1979-08-09", date_end = "1979-08-1
 # Sarpsborg missing temperatures. I may be able to use riem data to fill
 riem_stations(network = "NO__ASOS") %>% knitr::kable()
 
-#bovenkarspel missing temperatures 
-
-#miyazaki has some wacky prcp values.
-# I tried to multiply the data by 0.1 and plotting but there appears to be a 
-# lot of missing prcp values 
-file <- list.files("weather_files")[8]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value 
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle("miyazaki tmax")
-
-# Murcia has one high prcp day on 2000-20-23.
-
-# Pittsburgh PRCP 
-# http://www.weather.gov/media/pbz/records/prec.pdf
-# 2004-09-18 is the date with a prcp of 9.8
-file <- list.files("weather_files")[11]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value * 0.1
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
-
-#Rapid City
-file <- list.files("weather_files")[14]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value * 0.1
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
-filter(plot, value >5.0)
-
-
 
 #spDists
 #geosphere
