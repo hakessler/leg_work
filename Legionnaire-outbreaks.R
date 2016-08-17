@@ -1,5 +1,5 @@
 library(devtools)
-#install_github("ropenscilabs/rnoaa")
+#install_github("geanders/rnoaa")
 #install_github("ropenscilabs/riem")
 library(riem)
 library(rnoaa)
