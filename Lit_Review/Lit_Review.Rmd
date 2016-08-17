@@ -51,27 +51,15 @@ lag 0–9 weeks)
 Quality analysis of data
 ===================
 
-Overall I recommend not using London or Miyazaki data until alternate data sources are found. These locations have  too much missing data to be used. London also has faulty data and only one stations in which data is coming from. 
-
+Overall I recommend not using London or Miyazaki. These locations have too much missing data and riem_networks does not contain the data required. Riem doesn't have data from earlier dates. 
 
 #### TMIN and TMAX
 
 Sarsborg is missing this data from around December 1996 to around May 1999. I checked the minimum temperature on the 2002-12-31 where the min was -26 C. However, I cross checked this with weather underground and general record temperatures for Sarpsborg and have not found an agreeing source. 
 
-Miyazaki has a lot of missing temperatures. 
-
-London has a lot of missing temperatures 
 
 Bovenkarspel is missing temperatures from the start to around July 1990. 
 
-
-#### PRCP
-
-Miyazaki has a lot of missing prcp data
-
-London has a value that is somehow extremely high and is an outlier 
-
-Currently checking Bronx highs
 
 
 

@@ -1,7 +1,6 @@
 library(devtools)
 #install_github("ropenscilabs/rnoaa")
 #install_github("ropenscilabs/riem")
-library(riem)
 library(rnoaa)
 library(countyweather)
 library(dplyr)
@@ -292,19 +291,10 @@ for(i in 1:length(list.files("weather_files")))
 # London has one date in which the prcp is an outlier. That date is 1979-08-10 
 # in which the prcp is 255 in. I am trying to find another source to replace 
 # that date. So far I haven't found any data using riem_networks. None of the
-# stations go back very far. I think EGPD only goes to back to 2014. 
+# stations go back very far. Riem only provides data back to 2014.
 
+library(riem)
 library(knitr)
 riem_networks() %>% knitr::kable()
 riem_stations(network = "GB__ASOS") %>% kable()
 riem_measures(station = "EGPD", date_start = "1979-08-09", date_end = "1979-08-11") %>% head() %>% kable()
-
-# London also has a bunch of missing temperatures, but has information on TAVG 
-# which I could use instead.
-
-# Sarpsborg missing temperatures. I may be able to use riem data to fill
-riem_stations(network = "NO__ASOS") %>% knitr::kable()
-
-
-#spDists
-#geosphere
