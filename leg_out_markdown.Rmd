@@ -102,7 +102,7 @@ for(i in 1:length(outbreak_loc$id))
                                             "AWND","MDPR"),
                                     year_min = outbreak_loc[i, "year_min"],
                                     year_max = outbreak_loc[i, "year_max"],
-                                    radius = 30))
+                                    radius = 30)[[1]])
   }
 
 names(df) <- outbreak_loc$id
@@ -119,11 +119,10 @@ stations
 Not all the locations have stations nearby. Therefore, I will omit them from the weather data evaluation using the following code.
 
 ```{r}
-has_stations <- sapply(stations, function(x) nrow(x[[1]]) > 0)
+has_stations <- sapply(stations, function(x) nrow(x) > 0)
 outbreak_loc_true <- outbreak_loc %>%  filter(has_stations)
 outbreak_loc_true
 ```
-
 
 Using the countyweather codes I can gather the data for each station in a loop. The code gathers the weather data for each stations and averages them. Then I saved all the data as rds. files because they take a long time to gather. The data is saved in a folder I created called "weather_files/"
 
@@ -141,6 +140,14 @@ for(i in which(has_stations))
    good_monitors <- unique(filtered$id)
    filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
    averaged <- countyweather:::ave_weather(filtered_data)
+   
+   # For metrics that are reported in tenths of units (precipitation 
+   # and temperature), divide by 10 to get values in degrees Celsius and
+   # millimeters
+   which_tenth_units <- which(colnames(averaged) %in% 
+                                c("prcp", "tavg", "tmax", "tmin"))
+   averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
+   
    file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
    saveRDS(averaged, file_name)
    #readRDS(file_name)
@@ -241,7 +248,7 @@ for(i in 1:length(list.files("weather_files")))
 ```
 
 
-```{r, echo=FALSE, eval = FALSE}
+```{r, echo=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -258,9 +265,11 @@ for(i in 1:length(list.files("weather_files")))
   # print(a)
   
     c_plot <- filter(ex, metric=="prcp")
-    int <- interval(ymd(outbreak_loc[outbreak_loc$id == city_name,
+    int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
                                     "before_onset"]),
-                    ymd(outbreak_loc[outbreak_loc$id == city_name,
+                    ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
                                     "onset"]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
@@ -276,8 +285,8 @@ for(i in 1:length(list.files("weather_files")))
 ```
 
 
-```{r, eval=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
-for(i in 1:length(list(1:16)
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
   city_name <- gsub(".rds", "", file)
@@ -293,7 +302,12 @@ for(i in 1:length(list(1:16)
   print(a)
   
     c_plot <- filter(ex, metric=="prcp")
-    int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+    int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "before_onset"]),
+                    ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "onset"]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
     c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -312,7 +326,7 @@ for(i in 1:length(list(1:16)
 # PLOT 5
 ## TMAX
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -331,7 +345,12 @@ for(i in 1:length(list.files("weather_files")))
   
   c_plot <- filter(ex, metric=="tmax")
   c_plot$value <- c_plot$value
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "before_onset"]),
+                    ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -359,7 +378,7 @@ for(i in 1:length(list.files("weather_files")))
 # PLOT 6
 ## TMIN
 
-```{r, echo=FALSE, eval=FALSE}
+```{r, echo=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -378,7 +397,12 @@ for(i in 1:length(list.files("weather_files")))
   
   c_plot <- filter(ex, metric=="tmin")
   c_plot$value <- c_plot$value
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "before_onset"]),
+                    ymd(outbreak_loc[outbreak_loc$id == 
+                                       gsub("_", " ", city_name),
+                                    "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
