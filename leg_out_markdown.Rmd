@@ -16,7 +16,6 @@ First I installed and downloaded the packages needed including rnoaa from github
 ```{r, eval=FALSE}
 library(devtools)
 install_github("geanders/rnoaa")
-install_github("ropenscilabs/riem")
 ```
 
 ```{r, message=FALSE}
