@@ -33,7 +33,7 @@ library(lubridate)
 
 I created a data frame including the locations of each outbreak. I found the coordinates at http://maps.cga.harvard.edu/gpf/ and crossed checked them with Google coordinates. The other data in this set are year of outbreak and the year 10 years before the outbreak, onset date, and 14 days before the onset date. 
 
-```{r,echo=FALSE}
+```{r, echo=FALSE}
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                   "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
                                   "pamplona","rapid city","sarpsborg",
@@ -119,11 +119,8 @@ stations
 Not all the locations have stations nearby. Therefore, I will omit them from the weather data evaluation using the following code.
 
 ```{r}
-has_stations <- sapply(stations, function(x) nrow(x) > 0)
-outbreak_loc_true <- outbreak_loc %>%
-  arrange(id) %>%
-  filter(has_stations)
-outbreak_loc_true$stations <- NULL
+has_stations <- sapply(stations, function(x) nrow(x[[1]]) > 0)
+outbreak_loc_true <- outbreak_loc %>%  filter(has_stations)
 outbreak_loc_true
 ```
 
