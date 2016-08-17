@@ -1,7 +1,6 @@
 library(devtools)
 #install_github("geanders/rnoaa")
 #install_github("ropenscilabs/riem")
-library(riem)
 library(rnoaa)
 library(countyweather)
 library(dplyr)
@@ -174,17 +173,15 @@ for(i in 1:length(list.files("weather_files")))
     gather("metric", "value", -date)
   
   to_plot <- filter(ex, metric=="prcp")
-  to_plot$value <- to_plot$value * 0.1
   a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
     geom_line() + ggtitle(city_name)
   print(a)
   
     c_plot <- filter(ex, metric=="prcp")
-    c_plot$value <- c_plot$value * 0.1
     int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
     c_outbreak <- filter(c_plot, date %within% int) #%>%
     c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.1) +
+    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
          geom_vline(data = c_outbreak, 
                   aes(xintercept = value, color = day_in_seq), 
                   alpha = 0.25) + 
@@ -294,108 +291,10 @@ for(i in 1:length(list.files("weather_files")))
 # London has one date in which the prcp is an outlier. That date is 1979-08-10 
 # in which the prcp is 255 in. I am trying to find another source to replace 
 # that date. So far I haven't found any data using riem_networks. None of the
-# stations go back very far. I think EGPD only goes to back to 2014. 
+# stations go back very far. Riem only provides data back to 2014.
 
+library(riem)
 library(knitr)
 riem_networks() %>% knitr::kable()
 riem_stations(network = "GB__ASOS") %>% kable()
 riem_measures(station = "EGPD", date_start = "1979-08-09", date_end = "1979-08-11") %>% head() %>% kable()
-
-# London also has a bunch of missing temperatures, but has information on TAVG 
-# which I could use instead.
-
-# Sarpsborg missing temperatures. I may be able to use riem data to fill
-riem_stations(network = "NO__ASOS") %>% knitr::kable()
-
-#bovenkarspel missing temperatures 
-
-#miyazaki has some wacky prcp values.
-# I tried to multiply the data by 0.1 and plotting but there appears to be a 
-# lot of missing prcp values 
-file <- list.files("weather_files")[8]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value 
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle("miyazaki tmax")
-
-# Murcia has one high prcp day on 2000-20-23.
-
-# Pittsburgh PRCP 
-# http://www.weather.gov/media/pbz/records/prec.pdf
-# 2004-09-18 is the date with a prcp of 9.8
-file <- list.files("weather_files")[11]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value * 0.1
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
-
-#Rapid City
-file <- list.files("weather_files")[14]
-city_name <- gsub(".rds", "", file)
-averaged <- readRDS(paste0("weather_files/", file))
-
-ex <- averaged %>%
-  select(-ends_with("reporting")) %>%
-  gather("metric", "value", -date)
-
-plot <- filter(ex, metric %in% c("prcp"))
-plot$value <- plot$value * 0.1
-ggplot(plot, aes(x=date, y=value)) + geom_line() + ggtitle(city_name)
-filter(plot, value >5.0)
-
-#W august 10, 9:30
-
-
-for(i in 1:length(list.files("weather_files")))
-{
-  file <- list.files("weather_files")[i]
-  city_name <- gsub(".rds", "", file)
-  averaged <- readRDS(paste0("weather_files/", file))
-  
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-  
-  to_plot <- filter(ex, metric=="prcp")
-  to_plot$value <- to_plot$value * 0.1
-  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
-    geom_line() + ggtitle(city_name)
-  print(a)
-  
-  c_plot <- filter(ex, metric=="prcp")
-  c_plot$value <- c_plot$value * 0.1
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
-  c_outbreak <- filter(c_plot, date %within% int) #%>%
-  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 0.1) +
-    geom_vline(data = c_outbreak, 
-               aes(xintercept = value, color = day_in_seq), 
-               alpha = 0.25) + 
-    ggtitle(city_name) + xlab("PRCP (mm)") +
-    scale_color_gradientn(colors=rainbow(4))
-  
-  print(c)
-  
-  #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
-  c_outbreak$percentile <- city_percentile * 100
-  
-  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
-    geom_bar(stat="identity") +
-    ggtitle(city_name) +
-    ylim(c(0,100))
-  print(d)
-  
-}

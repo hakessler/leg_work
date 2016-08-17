@@ -1,41 +1,30 @@
 ---
-title: Short Paper
+title: Literature Review 
 author:
-  - name: Alice Anonymous
-    email: alice@example.com
-    affiliation: Some Institute of Technology
-    footnote: Corresponding Author
-  - name: Bob Security
-    email: bob@example.com
-    affiliation: Another University
-address:
-  - code: Some Institute of Technology
-    address: Department, Street, City, State, Zip
-  - code: Another University
-    address: Department, Street, City, State, Zip
-abstract: |
-  This is the abstract.
+  - name: Holly Kessler
+    affiliation: Colorado State University
 
-  It consists of two paragraphs.
+abstract: |
+  Literature review of research concerning Legionnaires' Disease and outbreak association with meteorlogical extremities.
 
 bibliography: mybibfile.bib
 output: rticles::elsevier_article
 ---
 
 
-
 Literature Review 
 ==========================
 
-#### Brandsema 
+#### Brandsema, P.S., ect. 
 
-LD incubation period is 2-10 days but can sometimes be a max of 19 days. This study looked at a 14 day incubation period. 
+Investigation into an outbreak from August to September 2010 in the Netherlands. A strong association was found between high temperature and precipitation and the outbreak. The study also referenced another paper that investigated an outbreak in the Netherlands in 2006 and the paper also found an association between temperature and precipitation and the outbreak. 
 
-"Meteorological data were obtained from the Royal Netherlands Meteorological Institute (KNMI) for the weather station in De Bilt". The variables analyzed were the mean weekly value for temperature, relative humidity, cloudiness, precipitation, and rainfall intensity.
+LD incubation period is 2-10 days but can sometimes be a max of 19 days. This study looked at a 14 day incubation period. Optimum temperature range for the bacteria is 25-25 degrees Celcius. 
+
+"Meteorological data were obtained from the Royal Netherlands Meteorological Institute (KNMI) for the weather station in De Bilt". The variables analyzed were the mean weekly value for temperature, relative humidity, cloudiness, precipitation, and rainfall intensity. Analyzation of the data was done through an extended Poisson regression model. 
 
 Used percentiles
 
-Found temperature but not humidity or precipitation was associated 
 
 #### Fisman
 
@@ -62,30 +51,15 @@ lag 0–9 weeks)
 Quality analysis of data
 ===================
 
+Overall I recommend not using London or Miyazaki. These locations have too much missing data and riem_networks does not contain the data required. Riem doesn't have data from earlier dates. 
+
 #### TMIN and TMAX
 
 Sarsborg is missing this data from around December 1996 to around May 1999. I checked the minimum temperature on the 2002-12-31 where the min was -26 C. However, I cross checked this with weather underground and general record temperatures for Sarpsborg and have not found an agreeing source. 
 
-Pittsburgh had two dates on 2009-01-17 and 2009-01-16 that were lows at -21 C. This is in fact correct. 
-
-I crossed checked the 1995 high temperature in Murcia and that appears to be correct 
-
-Miyazaki has a lot of missing temperatures. 
-
-London has a lot of missing temperatures 
-
-
-Both genesee locations appear to have similar weather which is good. 
 
 Bovenkarspel is missing temperatures from the start to around July 1990. 
 
-
-#### PRCP
-
-Miyazaki has a lot of missing prcp data
-
-
-London has a value that is somehow extremely high and is an outlier 
 
 
 
