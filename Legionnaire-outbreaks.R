@@ -63,14 +63,14 @@ outbreak_loc <- dplyr::rename(outbreak_loc, before_onset = V10)
 ####STATIONS####
 
 #df_all is not working correctly
-# df_all <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
-# station_data = station_data,
-# var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
-# year_min = 1966, year_max = 2015,
-# limit = 5)
+# station_data <- ghcnd_stations()[[1]]
+# df <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
+#                             station_data = station_data,
+#                             var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
+#                             year_min = 1966, year_max = 2015,
+#                             radius = 30)
 
 station_data <- ghcnd_stations()[[1]]
-
 df <- list()
 for(i in 1:length(outbreak_loc$id))
   {
