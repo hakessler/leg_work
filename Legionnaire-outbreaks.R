@@ -87,7 +87,7 @@ names(df) <- outbreak_loc$id
 stations <- df
 stations
 has_stations <- sapply(stations, function(x) nrow(x) > 0)
-outbreak_loc$stations <- paste0(outbreak_loc$stations, has_stations)
+haoutbreak_loc$stations <- paste0(outbreak_loc$stations, has_stations)
 # Shows only locations with stations 
 outbreak_loc_true <- outbreak_loc[ !grepl("FALSE", outbreak_loc$stations) , ]
 outbreak_loc_true$stations <- NULL
@@ -293,8 +293,4 @@ for(i in 1:length(list.files("weather_files")))
 # that date. So far I haven't found any data using riem_networks. None of the
 # stations go back very far. Riem only provides data back to 2014.
 
-library(riem)
-library(knitr)
-riem_networks() %>% knitr::kable()
-riem_stations(network = "GB__ASOS") %>% kable()
-riem_measures(station = "EGPD", date_start = "1979-08-09", date_end = "1979-08-11") %>% head() %>% kable()
+weatherundergroind
