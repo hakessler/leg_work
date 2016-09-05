@@ -51,14 +51,14 @@ lag 0–9 weeks)
 Quality analysis of data
 ===================
 
-Overall I recommend not using London or Miyazaki. These locations have too much missing data and riem_networks does not contain the data required. Riem doesn't have data from earlier dates. 
+Overall I recommend not using London or Miyazaki. These locations have too much missing data and riem_networks does not contain the data required. Riem doesn't have data from earlier dates nor does weather underground.
 
 #### TMIN and TMAX
 
-Sarsborg is missing this data from around December 1996 to around May 1999. I checked the minimum temperature on the 2002-12-31 where the min was -26 C. However, I cross checked this with weather underground and general record temperatures for Sarpsborg and have not found an agreeing source. 
+Sarsborg is missing this data from around December 1995 to around May 1999. I checked the minimum temperature on the 2002-12-31 where the min was -26 C. However, I cross checked this with weather underground and general record temperatures for Sarpsborg and have not found an agreeing source. We may be able ot obtain data from 1996 and later. 
 
 
-Bovenkarspel is missing temperatures from the start to around July 1990. 
+Bovenkarspel is missing temperatures from the start to around July 1990. Weather Underground does not provide data back this far
 
 
 
