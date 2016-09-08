@@ -226,64 +226,6 @@ for(file in list.files("weather_files"))
 
 I also made a loop to plot graphs and histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days.A plot of the percentiles is also included.
 
-```{r, echo=FALSE}
-
-for(i in 1:length(list.files("weather_files")))
-{
-  file <- list.files("weather_files")[i]
-  city_name <- gsub(".rds", "", file)
-  averaged <- readRDS(paste0("weather_files/", file))
-  
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-  
-  to_plot <- filter(ex, metric=="prcp")
-  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
-    geom_line() + ggtitle(city_name)
-  print(a)
-  
-}
-
-```
-
-
-```{r, echo=FALSE}
-for(i in 1:length(list.files("weather_files")))
-{
-  file <- list.files("weather_files")[i]
-  city_name <- gsub(".rds", "", file)
-  averaged <- readRDS(paste0("weather_files/", file))
-  
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-  
-  to_plot <- filter(ex, metric=="prcp")
-  # a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("PRCP (mm)") +
-  #   geom_line() + ggtitle(city_name)
-  # print(a)
-  
-    c_plot <- filter(ex, metric=="prcp")
-    int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "before_onset"]),
-                    ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "onset"]))
-    c_outbreak <- filter(c_plot, date %within% int) #%>%
-    c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
-         geom_vline(data = c_outbreak,
-                  aes(xintercept = value, color = day_in_seq),
-                  alpha = 0.25) +
-         ggtitle(city_name) + xlab("PRCP (mm)") +
-         scale_color_gradientn(colors=rainbow(4))
-
-    print(c)
-}
-```
-
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 for(i in 1:length(list.files("weather_files")))
@@ -318,6 +260,16 @@ for(i in 1:length(list.files("weather_files")))
          scale_color_gradientn(colors=rainbow(4))
              
     print(c)
+   
+  #percentiles    
+  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  c_outbreak$percentile <- city_percentile * 100
+  
+  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
 }
 ```
 
@@ -326,7 +278,7 @@ for(i in 1:length(list.files("weather_files")))
 # PLOT 5
 ## TMAX
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
 for(i in 1:length(list.files("weather_files")))
 {
   file <- list.files("weather_files")[i]
@@ -423,7 +375,6 @@ for(i in 1:length(list.files("weather_files")))
     ggtitle(city_name) +
     ylim(c(0,100))
   print(d)
-
 }
 ```
 

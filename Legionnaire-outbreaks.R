@@ -2,6 +2,7 @@ library(devtools)
 #install_github("geanders/rnoaa")
 #install_github("ropenscilabs/riem")
 library(rnoaa)
+library(riem)
 library(countyweather)
 library(dplyr)
 library(plyr)
@@ -11,10 +12,10 @@ library(ggplot2)
 library(lubridate)
 
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
-                                  "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
-                                  "pamplona","rapid city","sarpsborg",
-                                  "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                                  "london","sydney","genesee1","genesee2","columbus", "bronx"),
+                                    "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
+                                    "pamplona","rapid city","sarpsborg",
+                                    "barrow-in-furness","murcia","melbourne","bovenkarspel",
+                                    "london","sydney","genesee1","genesee2","columbus", "bronx"),
                            "file_id" = c("portugal","pittsburgh","quebec",
                                          "stoke_on_trent","edinburgh","miyazaki","pas_de_calais",
                                          "pamplona","rapid_city","sarpsborg","barrow_in_furness",
@@ -23,7 +24,7 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                            "latitude" = c(38.96, 40.43, 46.85, 53.02, 55.94,
                                           31.89, 50.51, 42.81, 44.06, 59.28,
                                           54.10, 37.98,-37.86, 52.70, 51.52,
-                                         -33.85, 43.09, 43.09, 39.98, 40.82),
+                                          -33.85, 43.09, 43.09, 39.98, 40.82),
                            "longitude" = c(-8.99, -79.98, -71.34, -2.15, -3.20,
                                            131.34, 2.37, -1.65, -103.22, 11.08, 
                                            -3.22, -1.12, 145.07, 5.24, -0.10,
@@ -48,7 +49,8 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                        "2002-07-18", "2003-11-28", "2006-06-01", "2005-05-26", "2005-05-12",
                                        "2002-07-30", "2001-06-26", "2000-04-17", "1999-02-25", "1989-01-01",
                                        "2016-04-25", "2014-06-06", "2015-05-04", "2013-07-09", "2015-07-12"),
-                           stringsAsFactors = FALSE)
+                           stringsAsFactors = FALSE
+)
 
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
@@ -58,61 +60,64 @@ for(i in 1:length(outbreak_loc$onset)) {
   b <- a - 14
   outbreak_loc[i,10] <- paste(b)
 }
-outbreak_loc <- dplyr::rename(outbreak_loc, before_onset = V10)
+outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
+#knitr::kable(outbreak_loc)
+
 
 ####STATIONS####
+#Run the following code once
 
-#df_all is not working correctly
 # station_data <- ghcnd_stations()[[1]]
-# df <- meteo_nearby_stations(lat_lon_df = outbreak_loc,
-#                             station_data = station_data,
-#                             var = c("PRCP","TAVG","TMAX","TMIN","AWND","MDPR"),
-#                             year_min = 1966, year_max = 2015,
-#                             radius = 30)
+# df <- list()
+# for(i in 1:length(outbreak_loc$id))
+# {
+#   df[[i]] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
+#                                     station_data = station_data,
+#                                     var = c("PRCP","TAVG","TMAX","TMIN",
+#                                             "AWND","MDPR"),
+#                                     year_min = outbreak_loc[i, "year_min"],
+#                                     year_max = outbreak_loc[i, "year_max"],
+#                                     radius = 30)[[1]])
+# }
+# 
+# names(df) <- outbreak_loc$id
+# stations <- df
+# saveRDS(stations, file = "stations.RData")
 
-station_data <- ghcnd_stations()[[1]]
-df <- list()
-for(i in 1:length(outbreak_loc$id))
-  {
-    df[i] <- (meteo_nearby_stations(lat_lon_df = outbreak_loc[i,],
-                                    station_data = station_data,
-                                    var = c("PRCP","TAVG","TMAX","TMIN",
-                                            "AWND","MDPR"),
-                                    year_min = outbreak_loc[i, "year_min"],
-                                    year_max = outbreak_loc[i, "year_max"],
-                                    radius = 30))
-  }
+stations <- readRDS("stations.RData")
 
-names(df) <- outbreak_loc$id
-stations <- df
-stations
 has_stations <- sapply(stations, function(x) nrow(x) > 0)
-haoutbreak_loc$stations <- paste0(outbreak_loc$stations, has_stations)
-# Shows only locations with stations 
-outbreak_loc_true <- outbreak_loc[ !grepl("FALSE", outbreak_loc$stations) , ]
-outbreak_loc_true$stations <- NULL
+outbreak_loc_true <- outbreak_loc %>%  filter(has_stations)
 
 
 #### DATA GATHER & SAVE ####
 # Only need to run once to save the data 
 
-#for(i in which(has_stations))
+# for(i in which(has_stations))
 # {
-#    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
-#                                 keep_flags = FALSE,
-#                                 date_min = outbreak_loc$date_min[i],
-#                                 date_max = outbreak_loc$date_max[i],
-#                                 var = c("prcp","snow","snwd","tmax","tmin","tavg"))
-
+#   meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
+#                                   keep_flags = FALSE,
+#                                   date_min = outbreak_loc$date_min[i],
+#                                   date_max = outbreak_loc$date_max[i],
+#                                   var = c("prcp","snow","snwd","tmax","tmin","tavg"))
+# 
 #   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
 #   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
 #   good_monitors <- unique(filtered$id)
 #   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
 #   averaged <- countyweather:::ave_weather(filtered_data)
+# 
+#   # For metrics that are reported in tenths of units (precipitation
+#   # and temperature), divide by 10 to get values in degrees Celsius and
+#   # millimeters
+#   which_tenth_units <- which(colnames(averaged) %in%
+#                                c("prcp", "tavg", "tmax", "tmin"))
+#   averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
+# 
 #   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
 #   saveRDS(averaged, file_name)
 #   #readRDS(file_name)
-#  }
+# }
 
 
 ###DATA ANALYZE###
@@ -144,7 +149,8 @@ for(file in list.files("weather_files"))
     ggtitle(city_name)
   print(a)
 }
-  #PLOT 3: TMAX and TMIN
+
+#PLOT 3: TMAX and TMIN
   for(file in list.files("weather_files"))
   {
     city_name <- gsub(".rds", "", file)
@@ -177,30 +183,34 @@ for(i in 1:length(list.files("weather_files")))
     geom_line() + ggtitle(city_name)
   print(a)
   
-    c_plot <- filter(ex, metric=="prcp")
-    int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
-    c_outbreak <- filter(c_plot, date %within% int) #%>%
-    c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
-         geom_vline(data = c_outbreak, 
-                  aes(xintercept = value, color = day_in_seq), 
-                  alpha = 0.25) + 
-         ggtitle(city_name) + xlab("PRCP (mm)") +
-         scale_color_gradientn(colors=rainbow(4))
-             
-    print(c)
-    
-    #percentiles
-    city_percentile <- ecdf(ex$value)(c_outbreak$value)
-    c_outbreak$percentile <- city_percentile * 100
-    
-    d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
-           geom_bar(stat="identity") +
-           ggtitle(city_name) +
-           ylim(c(0,100))
-    print(d)
-    
-  }
+  c_plot <- filter(ex, metric=="prcp")
+  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
+  c_outbreak <- filter(c_plot, date %within% int) #%>%
+  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
+  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
+    geom_vline(data = c_outbreak, 
+               aes(xintercept = value, color = day_in_seq), 
+               alpha = 0.25) + 
+    ggtitle(city_name) + xlab("PRCP (mm)") +
+    scale_color_gradientn(colors=rainbow(4))
+  
+  print(c)
+  
+  #percentiles    
+  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  c_outbreak$percentile <- city_percentile * 100
+  
+  d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
+}
 
 # PLOT 5: TMAX
 for(i in 1:length(list.files("weather_files")))
@@ -221,7 +231,12 @@ for(i in 1:length(list.files("weather_files")))
   
   c_plot <- filter(ex, metric=="tmax")
   c_plot$value <- c_plot$value
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -263,7 +278,12 @@ for(i in 1:length(list.files("weather_files")))
   
   c_plot <- filter(ex, metric=="tmin")
   c_plot$value <- c_plot$value
-  int <- interval(ymd(df_stations$before_onset[i]), ymd(df_stations$onset[i]))
+  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(outbreak_loc[outbreak_loc$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -284,13 +304,5 @@ for(i in 1:length(list.files("weather_files")))
     ggtitle(city_name) +
     ylim(c(0,100))
   print(d)
-
-}  
+}
   
-###DATA CLEANUP####
-# London has one date in which the prcp is an outlier. That date is 1979-08-10 
-# in which the prcp is 255 in. I am trying to find another source to replace 
-# that date. So far I haven't found any data using riem_networks. None of the
-# stations go back very far. Riem only provides data back to 2014.
-
-weatherundergroind

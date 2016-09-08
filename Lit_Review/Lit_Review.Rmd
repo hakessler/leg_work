@@ -19,33 +19,47 @@ Literature Review
 
 Investigation into an outbreak from August to September 2010 in the Netherlands. A strong association was found between high temperature and precipitation and the outbreak. The study also referenced another paper that investigated an outbreak in the Netherlands in 2006 and the paper also found an association between temperature and precipitation and the outbreak. 
 
-LD incubation period is 2-10 days but can sometimes be a max of 19 days. This study looked at a 14 day incubation period. Optimum temperature range for the bacteria is 25-25 degrees Celcius. 
+LD incubation period is 2-10 days but can sometimes be a max of 19 days. This study looked at a 14 day incubation period. The optimum temperature range for the bacteria is 25-25 degrees Celcius. 
 
-"Meteorological data were obtained from the Royal Netherlands Meteorological Institute (KNMI) for the weather station in De Bilt". The variables analyzed were the mean weekly value for temperature, relative humidity, cloudiness, precipitation, and rainfall intensity. Analyzation of the data was done through an extended Poisson regression model. 
+"Meteorological data were obtained from the Royal Netherlands Meteorological Institute (KNMI) for the weather station in De Bilt". The variables analyzed were the mean weekly value for temperature, relative humidity, cloudiness, precipitation, and rainfall intensity. Analyzation of the data was done through an extended Poisson regression model. The study's final model included a 4-week mean temperature period and 2-week mean precipitation period for long term analysis.
 
-Used percentiles
+The results indicated that out of the 1514 cases of LD occuring between 1 July 2003 and 31 December 2011, 1156 of the cases occured during warmer period of the year (weeks 16-44). The analysis results indicated that after a 4-week period of warm weather the incidence is 2.2 times higher than after a colder period. Analysis of the model further indicated that LD incidences increased with long lasting and high intensity precipitation. The study further failed to find an explanation of LD incidence increase in 2010.
+"This study confirms that the record high LD incidence
+in summer 2010 was related to a long period of warm
+weather which was followed by intense rainfall."
+
+The study is limited due to data being used from only one station. The authors also recommended that a future study should use daily weather data versus weekly averages as well as looking into the incubation period for each individual case. 
 
 
 #### Fisman
 
-Analyzed month of occurence of case, not onset date. Stated that onset time for LD is 2-10 days
+The study objective was to analyze LD outbreaks in the greater Philadelphia metropolitan area (GPMA) to determine any temporal or seasonal trends. The time period assesed was 1995-2003.
 
-meteorological data were obtained from airport weather stations in
-Montgomery County (Willow Grove Naval Air Station) and
-Philadelphia County (Philadelphia International Airport)
+Patient data, including onset date, was obtained from county and state health authorities. Meteorological data were obtain from the airport weather stations in Montgomery county and Philadelphia County. The variables taken from the stations were min and max temperature, relative humidity, wind speed, atmospheric pressure, and precipitation. These data were averaged between the two stations. 
+
+Data were analyzed using Poisson regretion models. "Acute associations between meteorological exposures and occurence of cases were evaluated using a case-crossover approach".
+
+Legionellosis has an incubation period of 3-5 days, but this study used a range of 2-10 days before the onset date. The dates before the onset period were divided into three catagories: 1-5 days before onset = "likely during incubation", 6-10 days = "likely preceding incubation", 11-15 days = "preceding incubation" If onset date was not available, then the month of the first case was used. They used both daily and average exposures. 
+
+Analysis of time trends, seasonality, and weather effects were done using aggregate monthly case counts. Results indicated strong evidence both for seasonality of legionellosis and for increasing case counts over time. In the case-crossover analysis of acute weather effects there was an assocation between precipitation and relative humidity and LD cases 6-10 days before the onset. There was no association between wind speed and LD cases. There was also no association between daily or muliday max or min temperatures. However, they did observe that cases occured during hot months of the year. 
 
 #### Halsby 
 
-Weather data were obtained from Met Office Land
-Surface Observation Stations Data (‘MIDAS’ – Met
-Office Integrated Data Archive System) held by the
-British Atmospheric Data Centre
+The objective of this study is to use a case-crossover analysis to determine if there is a relationship between LD cases in England and Wales and meteroological factors. The meteorological variables used were tmperature, RH, rianfall, windspeed, and UV light. 
 
-temperature by a linear threshold
-model, with the threshold at the 25th centile (11·35 °C;
-lag 0–9 weeks)
+Information on the LD cases were obtained from Public Health England. The time period in this study was between 1993 and 2008. 1676 cases were used for analysis. Weather data were obtained from Met Office Land Surface Observation Stations Data (‘MIDAS’ – Met Office Integrated Data Archive System) held by the British Atmospheric Data Centre. The variables were obtained by maximum daily temperature, RH calculated from hourly dewpoint temperature and hourly air temperature and averaged for daily RH, daily precipitation (mm), and wind speed in knows. UV data were obatined from HPA Chilton and calculated into total radiant exposure for each day. 
 
+Onset dates were used for the case-control analysis, and each onset date was given 27 control days. The incubation period was defined as 2-10 days before the onset date. Univariable and multivariable models were also used.
 
+The results suggested UV and wind speed were not associated and temperature, RH, and rainfall were associated. Temperature appeared to have a 9 week lag before there was a risk of LD. The study explains that it may take awhile for the bacteria to grow, and for the water source to heat up. This was a limitation of the study.
+
+#### Karagiannis
+
+This study looks into LD outbreaks and assocations with weather in the Netherlands.
+
+States that the onset period for LD bacteria is 2-14 days after infection. 
+
+Ourbreak data were obtained from OSIRIS and the period observed in this study is between 1 July 2003 and 30 September 2007. Dates were calculated into infection weeks to be used. The analysis was restricted to April-September to exclude cold parts of the year. Meteorological data were obatined from KNMI weather stations in De Bilt. The variables collected were mean weekly temperature, weekly sunchine duration, mean weekly cloudiness, mean weekly wind speed, weekly precipitation, mean weekly rainfall intensity, and mean weekly RH. 
 
 
 Quality analysis of data
