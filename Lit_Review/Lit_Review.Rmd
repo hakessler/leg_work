@@ -57,9 +57,20 @@ The results suggested UV and wind speed were not associated and temperature, RH,
 
 This study looks into LD outbreaks and assocations with weather in the Netherlands.
 
-States that the onset period for LD bacteria is 2-14 days after infection. 
+States that the onset period for LD bacteria is 2-14 days after infection. The study used onset date and a lag period of 5 days. 
 
 Ourbreak data were obtained from OSIRIS and the period observed in this study is between 1 July 2003 and 30 September 2007. Dates were calculated into infection weeks to be used. The analysis was restricted to April-September to exclude cold parts of the year. Meteorological data were obatined from KNMI weather stations in De Bilt. The variables collected were mean weekly temperature, weekly sunchine duration, mean weekly cloudiness, mean weekly wind speed, weekly precipitation, mean weekly rainfall intensity, and mean weekly RH. 
+
+Analysis was done by utalizing Poisson regression generalized linear models. 707 cases of LD were found. Of those, 432 (61.1%) occured during warm periods of the year. The results indicated that high temperatures in the 2 weeks preceding the outbreak possibly contributed to LD cases. Cases also increased with RH and precipitaiton. The Multivariable model suggests the LD cases increase with increases in mean weekly temperature, precipitation, and RH.
+
+#### RICKETS 
+
+This study observed meteorological variables and their affect on LD cases in Wales and England from 2003-2006. The study specifically analyzed an outbreak in 2006.These years were picked due to a heightened interest in LD after a 2002 outbreak, and therefore more accurate LD reporting and diagnosis. 
+
+States that LD incubation date is 2-10 days. 
+
+Case data were obatined from HPA CfI. Control data is from the years 2003-2005 with 2006 being the case year. Meteorological data were obatined from 
+
 
 
 Quality analysis of data
