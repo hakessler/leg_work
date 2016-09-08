@@ -63,15 +63,17 @@ Ourbreak data were obtained from OSIRIS and the period observed in this study is
 
 Analysis was done by utalizing Poisson regression generalized linear models. 707 cases of LD were found. Of those, 432 (61.1%) occured during warm periods of the year. The results indicated that high temperatures in the 2 weeks preceding the outbreak possibly contributed to LD cases. Cases also increased with RH and precipitaiton. The Multivariable model suggests the LD cases increase with increases in mean weekly temperature, precipitation, and RH.
 
-#### RICKETS 
+#### RICKETTS 
 
 This study observed meteorological variables and their affect on LD cases in Wales and England from 2003-2006. The study specifically analyzed an outbreak in 2006.These years were picked due to a heightened interest in LD after a 2002 outbreak, and therefore more accurate LD reporting and diagnosis. 
 
 States that LD incubation date is 2-10 days. 
 
-Case data were obatined from HPA CfI. Control data is from the years 2003-2005 with 2006 being the case year. Meteorological data were obatined from 
+Case data were obatined from HPA CfI. Control data is from the years 2003-2005 with 2006 being the case year. Meteorological data were obatined from the National Climate Data Centre (NCDC). Daily data of the following variables were obatined: maximum/mean air temperature, dewpoint temperature [used only for the purpose of calculating relative humidity (RH)], total precipitation, and mean windspeed.
 
+Analysis was done using a case-crossover study design. Weather data from a 14-day incubation period before onset dates were compared to the weather during those same days in the previous 3 years. 
 
+"For the quarter July–September there was strong evidence to suggest a year, humidity and temperature interaction".
 
 Quality analysis of data
 ===================
