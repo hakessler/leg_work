@@ -1,6 +1,7 @@
 library(devtools)
-#install_github("geanders/rnoaa")
+#install.packages("rnoaa")
 #install_github("ropenscilabs/riem")
+#install.packages("countyweather")
 library(rnoaa)
 library(riem)
 library(countyweather)
@@ -305,4 +306,6 @@ for(i in 1:length(list.files("weather_files")))
     ylim(c(0,100))
   print(d)
 }
-  
+
+uninstall rnoaa first: remove.packages("rnoaa")  
+reinstall rnoaa and countyweather
