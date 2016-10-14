@@ -1,9 +1,8 @@
 library(devtools)
-#install.packages("rnoaa")
+install.packages("rnoaa")
 #install_github("ropenscilabs/riem")
-#install.packages("countyweather")
 library(rnoaa)
-library(riem)
+#library(riem)
 library(countyweather)
 library(dplyr)
 library(plyr)
@@ -126,6 +125,16 @@ outbreak_loc_true <- outbreak_loc %>%  filter(has_stations)
 # Files in "weather_files/" are in alphabetical order
 df_stations <- arrange(outbreak_loc_true, id)
 
+#Adding yday to the dataframe
+for(i in 1:length(df_stations$onset)) {
+  a <- yday(df_stations$onset[i])
+  df_stations[i,11] <- paste(a)
+  b <- yday(df_stations$before_onset[i])
+  df_stations[i,12] <- paste(b)
+}
+
+df_stations <- rename(df_stations, replace = c("V11"="onset_yday"))
+df_stations <- rename(df_stations, replace = c("V12"="before_onset_yday"))
 
 ####PLOTS####
 
@@ -307,5 +316,27 @@ for(i in 1:length(list.files("weather_files")))
   print(d)
 }
 
-uninstall rnoaa first: remove.packages("rnoaa")  
-reinstall rnoaa and countyweather
+
+#SUBSET IN 2-WEEKS RANGE 
+for(i in 1:length(list.files("weather_files")))
+{
+  i <- 1
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  ex$date <- yday(ex$date)
+  filter(ex, date %within% c(df_stations$before_onset_yday[i], df_stations$onset_yday[i]))
+  
+  
+}
+
+
+
+
+
+#TABLE: outbreak, lead(#days before outbreak started), percentiles (year and seasonal)

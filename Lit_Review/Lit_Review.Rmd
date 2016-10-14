@@ -75,6 +75,9 @@ Analysis was done using a case-crossover study design. Weather data from a 14-da
 
 "For the quarter July–September there was strong evidence to suggest a year, humidity and temperature interaction".
 
+
+
+
 Quality analysis of data
 ===================
 
