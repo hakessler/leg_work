@@ -1,5 +1,5 @@
 library(devtools)
-install.packages("rnoaa")
+#install.packages("rnoaa")
 #install_github("ropenscilabs/riem")
 library(rnoaa)
 #library(riem)
@@ -212,7 +212,7 @@ for(i in 1:length(list.files("weather_files")))
   print(c)
   
   #percentiles    
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -259,7 +259,7 @@ for(i in 1:length(list.files("weather_files")))
   print(c)
   
   #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -306,7 +306,7 @@ for(i in 1:length(list.files("weather_files")))
   print(c)
   
   #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -317,7 +317,7 @@ for(i in 1:length(list.files("weather_files")))
 }
 
 
-#SUBSET IN 2-WEEKS RANGE 
+#PRCP - SUBSET IN 2-WEEKS RANGE 
 for(i in 1:length(list.files("weather_files")))
 {
   i <- 1
@@ -329,14 +329,35 @@ for(i in 1:length(list.files("weather_files")))
     select(-ends_with("reporting")) %>%
     gather("metric", "value", -date)
   
-  ex$date <- yday(ex$date)
-  filter(ex, date %within% c(df_stations$before_onset_yday[i], df_stations$onset_yday[i]))
+  ex_perc <- ex
+  ex_perc$date <- yday(ex_perc$date)
+  ex_perc <- filter(ex_perc, date %in% seq(as.numeric(df_stations$before_onset_yday[i]), as.numeric(df_stations$onset_yday[i])))
+  ex_perc <- filter(ex_perc, metric=="prcp")
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
+  ex_outbreak <- filter(ex, date %within% int)
+  ex_outbreak <- filter(ex_outbreak, metric=="prcp")
+  ex_outbreak <- mutate(ex_outbreak, day_in_seq = 1:nrow(ex_outbreak))
   
+  #PERCENTILE PLOT
+  city_percentile <- ecdf(ex_perc$value)(ex_outbreak$value)
+  ex_outbreak$percentile <- city_percentile * 100
   
+  d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
 }
 
 
 
+?seq()
 
-
+?quantile(vector, probs = (precentile)) - run on year-round
 #TABLE: outbreak, lead(#days before outbreak started), percentiles (year and seasonal)
+#?'%within'
