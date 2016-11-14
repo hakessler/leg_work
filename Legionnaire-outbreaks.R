@@ -346,7 +346,7 @@ for(i in 1:length(list.files("weather_files")))
   #PERCENTILE DATA
   city_percentile <- ecdf(ex_perc$value)(ex_outbreak$value)
   ex_outbreak$percentile <- city_percentile * 100
-  file_name <- paste0("percentile_data/", df_stations$file_id[i], "_seasonal.rds")
+  file_name <- paste0("percentile_data/", df_stations$file_id[i], "_seas_prcp.rds")
   saveRDS(ex_outbreak, file_name)
   
 }  
@@ -363,7 +363,7 @@ d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
 }
 
 
-data.frame("days_before_onset" = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14),
+data.frame("days_before_onset" = c(0:14),
            "TMAX_year" = c(),
            "TMAX_seasonal" = c(),
            "TMIN_year" = c(),
@@ -371,6 +371,7 @@ data.frame("days_before_onset" = c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14),
            "PRCP_year" = c(),
            "PRCP_seasonal" = c(),
            ) 
+c()
 
 #Check percentiles
 #TABLE: outbreak, lead(#days before outbreak started), percentiles (year and seasonal)
