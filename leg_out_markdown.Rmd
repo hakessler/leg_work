@@ -21,7 +21,6 @@ install_github("geanders/rnoaa")
 ```{r, message=FALSE}
 library(devtools)
 library(rnoaa)
-library(riem)
 library(countyweather)
 library(dplyr)
 library(plyr)
@@ -35,10 +34,10 @@ I created a data frame including the locations of each outbreak. I found the coo
 
 ```{r, echo=FALSE}
 outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
-                                  "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
-                                  "pamplona","rapid city","sarpsborg",
-                                  "barrow-in-furness","murcia","melbourne","bovenkarspel",
-                                  "london","sydney","genesee1","genesee2","columbus", "bronx"),
+                                    "stoke-on-trent","edinburgh","miyazaki","pas-de-calais",
+                                    "pamplona","rapid city","sarpsborg",
+                                    "barrow-in-furness","murcia","melbourne","bovenkarspel",
+                                    "london","sydney","genesee1","genesee2","columbus", "bronx"),
                            "file_id" = c("portugal","pittsburgh","quebec",
                                          "stoke_on_trent","edinburgh","miyazaki","pas_de_calais",
                                          "pamplona","rapid_city","sarpsborg","barrow_in_furness",
@@ -47,7 +46,7 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                            "latitude" = c(38.96, 40.43, 46.85, 53.02, 55.94,
                                           31.89, 50.51, 42.81, 44.06, 59.28,
                                           54.10, 37.98,-37.86, 52.70, 51.52,
-                                         -33.85, 43.09, 43.09, 39.98, 40.82),
+                                          -33.85, 43.09, 43.09, 39.98, 40.82),
                            "longitude" = c(-8.99, -79.98, -71.34, -2.15, -3.20,
                                            131.34, 2.37, -1.65, -103.22, 11.08, 
                                            -3.22, -1.12, 145.07, 5.24, -0.10,
@@ -73,8 +72,7 @@ outbreak_loc <- data.frame("id" = c("portugal","pittsburgh","quebec",
                                        "2002-07-30", "2001-06-26", "2000-04-17", "1999-02-25", "1989-01-01",
                                        "2016-04-25", "2014-06-06", "2015-05-04", "2013-07-09", "2015-07-12"),
                            stringsAsFactors = FALSE
-                           )
-
+)
 outbreak_loc$date_min <- as.character(outbreak_loc$date_min)
 outbreak_loc$date_max <- as.character(outbreak_loc$date_max)
 outbreak_loc$onset <- ymd(outbreak_loc$onset)
@@ -84,14 +82,14 @@ for(i in 1:length(outbreak_loc$onset)) {
   outbreak_loc[i,10] <- paste(b)
 }
 outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
-# outbreak_loc
+
 knitr::kable(outbreak_loc)
 ```
 
 The next function will download information from all of the stations. It only needs to be downloaded once per session. It will take a couple minutes to download.
 
 I created a loop to get a list of the stations within 30 km of the location.
-```{r eval = FALSE}
+```{r, eval = FALSE}
 station_data <- ghcnd_stations()[[1]]
 df <- list()
 for(i in 1:length(outbreak_loc$id))
@@ -127,31 +125,31 @@ outbreak_loc_true
 Using the countyweather codes I can gather the data for each station in a loop. The code gathers the weather data for each stations and averages them. Then I saved all the data as rds. files because they take a long time to gather. The data is saved in a folder I created called "weather_files/"
 
 ```{r, eval=FALSE}
+
 for(i in which(has_stations))
 {
-    meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
-                                 keep_flags = FALSE,
-                                 date_min = outbreak_loc$date_min[i],
-                                 date_max = outbreak_loc$date_max[i],
-                                 var = c("prcp","snow","snwd","tmax","tmin","tavg"))
+  meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
+                                  keep_flags = FALSE,
+                                  date_min = outbreak_loc$date_min[i],
+                                  date_max = outbreak_loc$date_max[i],
+                                  var = c("prcp","snow","snwd","tmax","tmin","tavg"))
 
-   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
-   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
-   good_monitors <- unique(filtered$id)
-   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
-   averaged <- countyweather:::ave_weather(filtered_data)
-   
-   # For metrics that are reported in tenths of units (precipitation 
-   # and temperature), divide by 10 to get values in degrees Celsius and
-   # millimeters
-   which_tenth_units <- which(colnames(averaged) %in% 
-                                c("prcp", "tavg", "tmax", "tmin"))
-   averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
-   
-   file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
-   saveRDS(averaged, file_name)
-   #readRDS(file_name)
-  }
+  coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
+  filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
+  good_monitors <- unique(filtered$id)
+  filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
+  averaged <- countyweather:::ave_weather(filtered_data)
+
+  # For metrics that are reported in tenths of units (precipitation
+  # and temperature), divide by 10 to get values in degrees Celsius and
+  # millimeters
+  which_tenth_units <- which(colnames(averaged) %in%
+                               c("prcp", "tavg", "tmax", "tmin"))
+  averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
+
+  file_name <- paste0("weather_files/", outbreak_loc$file_id[i], ".rds")
+  saveRDS(averaged, file_name)
+}
 ```
 
 Now that all of the data is gathered and averaged I can plot the data. The loop will go through the files in order which is in alphabetical order. Therefore I must order my outbreak data frame into alphabetical order too. I will rename this data frame as df_stations for plotting. 
@@ -167,6 +165,16 @@ df_stations
 This plot is divided by outbreaks in the northern and southern hemisphere. This allows us to see when the outbreaks generally occur in the year. 
 
 ```{r, echo=FALSE}
+for(i in 1:length(df_stations$onset)) {
+  a <- yday(df_stations$onset[i])
+  df_stations[i,11] <- paste(a)
+  b <- yday(df_stations$before_onset[i])
+  df_stations[i,12] <- paste(b)
+}
+
+df_stations <- rename(df_stations, replace = c("V11"="onset_yday"))
+df_stations <- rename(df_stations, replace = c("V12"="before_onset_yday"))
+
 df_stations$yday <- yday(df_stations$onset)
 df_stations$hemisphere <- c("N","N","N","N","N","N","S","N","N","N","N","N","N","N","S")
 ggplot(df_stations, aes(yday)) + geom_histogram(binwidth = 1) + 
@@ -203,19 +211,19 @@ for(file in list.files("weather_files"))
 
 ```{r, echo=FALSE}
 for(file in list.files("weather_files"))
-  {
-  city_name <- gsub(".rds", "", file)
-  averaged <- readRDS(paste0("weather_files/", file))
+{
+    city_name <- gsub(".rds", "", file)
+    averaged <- readRDS(paste0("weather_files/", file))
+    
+    ex <- averaged %>%
+      select(-ends_with("reporting")) %>%
+      gather("metric", "value", -date)
   
-  ex <- averaged %>%
-    select(-ends_with("reporting")) %>%
-    gather("metric", "value", -date)
-
-  to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
-  b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
+    to_plot <- filter(ex, metric %in% c("tmax", "tmin"))
+    b <- ggplot(to_plot, aes(x = date, y = value, color = metric)) + 
     geom_line() + ggtitle(city_name)
-  print(b)
-  
+   print(b)
+   
   }
 
 ```
@@ -243,26 +251,26 @@ for(i in 1:length(list.files("weather_files")))
     geom_line() + ggtitle(city_name)
   print(a)
   
-    c_plot <- filter(ex, metric=="prcp")
-    int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "before_onset"]),
-                    ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "onset"]))
-    c_outbreak <- filter(c_plot, date %within% int) #%>%
-    c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
-    c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
-         geom_vline(data = c_outbreak, 
-                  aes(xintercept = value, color = day_in_seq), 
-                  alpha = 0.25) + 
-         ggtitle(city_name) + xlab("PRCP (mm)") +
-         scale_color_gradientn(colors=rainbow(4))
-             
-    print(c)
-   
+  c_plot <- filter(ex, metric=="prcp")
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
+  c_outbreak <- filter(c_plot, date %within% int) #%>%
+  c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
+  c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
+    geom_vline(data = c_outbreak, 
+               aes(xintercept = value, color = day_in_seq), 
+               alpha = 0.25) + 
+    ggtitle(city_name) + xlab("PRCP (mm)") +
+    scale_color_gradientn(colors=rainbow(4))
+  
+  print(c)
+  
   #percentiles    
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -270,6 +278,10 @@ for(i in 1:length(list.files("weather_files")))
     ggtitle(city_name) +
     ylim(c(0,100))
   print(d)
+  
+  file_name <- paste0("percentile_data/prcp_year/", df_stations$file_id[i], "_prcp_year.rds")
+  saveRDS(ex_outbreak, file_name)
+  
 }
 ```
 
@@ -290,19 +302,19 @@ for(i in 1:length(list.files("weather_files")))
     gather("metric", "value", -date)
   
   to_plot <- filter(ex, metric=="tmax")
-  to_plot$value <- to_plot$value
-  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("TMAX (C)") +
+  to_plot$value <- to_plot$value * 10
+  a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("TMIN (C)") +
     geom_line() + ggtitle(city_name)
   print(a)
   
   c_plot <- filter(ex, metric=="tmax")
-  c_plot$value <- c_plot$value
-  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "before_onset"]),
-                    ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "onset"]))
+  c_plot$value <- c_plot$value * 10
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -315,7 +327,7 @@ for(i in 1:length(list.files("weather_files")))
   print(c)
   
   #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -323,7 +335,10 @@ for(i in 1:length(list.files("weather_files")))
     ggtitle(city_name) +
     ylim(c(0,100))
   print(d)
-}  
+  
+  file_name <- paste0("percentile_data/tmax_year/", df_stations$file_id[i], "_tmax_year.rds")
+  saveRDS(ex_outbreak, file_name)
+} 
 ```
 
 
@@ -342,19 +357,19 @@ for(i in 1:length(list.files("weather_files")))
     gather("metric", "value", -date)
   
   to_plot <- filter(ex, metric=="tmin")
-  to_plot$value <- to_plot$value
+  to_plot$value <- to_plot$value * 10
   a <- ggplot(to_plot, aes(x = date, y = value)) + ylab("TMIN (C)") +
     geom_line() + ggtitle(city_name)
   print(a)
   
   c_plot <- filter(ex, metric=="tmin")
-  c_plot$value <- c_plot$value
-  int <- interval(ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "before_onset"]),
-                    ymd(outbreak_loc[outbreak_loc$id == 
-                                       gsub("_", " ", city_name),
-                                    "onset"]))
+  c_plot$value <- c_plot$value * 10
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
   c_outbreak <- filter(c_plot, date %within% int) #%>%
   c_outbreak <- mutate(c_outbreak, day_in_seq = 1:nrow(c_outbreak))
   c <- ggplot(c_plot, aes(value)) + geom_histogram(binwidth = 2) +
@@ -367,7 +382,7 @@ for(i in 1:length(list.files("weather_files")))
   print(c)
   
   #percentiles
-  city_percentile <- ecdf(ex$value)(c_outbreak$value)
+  city_percentile <- ecdf(c_plot$value)(c_outbreak$value)
   c_outbreak$percentile <- city_percentile * 100
   
   d <- ggplot(c_outbreak, aes(x = day_in_seq, y = percentile)) +
@@ -375,8 +390,192 @@ for(i in 1:length(list.files("weather_files")))
     ggtitle(city_name) +
     ylim(c(0,100))
   print(d)
+  
+  file_name <- paste0("percentile_data/tmin_year/", df_stations$file_id[i], "_tmin_year.rds")
+  saveRDS(ex_outbreak, file_name)
 }
 ```
 
 
+Now I gathered a 2-week seasonal subset data for each weather variable and plotted it in a table.
+
+```{r, echo=FALSE}
+#PRCP - SUBSET IN 2-WEEK SEASONAL RANGE 
+
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  ex_perc <- ex
+  ex_perc$date <- yday(ex_perc$date)
+  ex_perc <- filter(ex_perc, date %in% seq(as.numeric(df_stations$before_onset_yday[i]), as.numeric(df_stations$onset_yday[i])))
+  ex_perc <- filter(ex_perc, metric=="prcp")
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                     gsub("_", " ", city_name),
+                                   "onset"]))
+  ex_outbreak <- filter(ex, date %within% int)
+  ex_outbreak <- filter(ex_outbreak, metric=="prcp")
+  ex_outbreak <- mutate(ex_outbreak, day_in_seq = 1:nrow(ex_outbreak))
+  
+  #PERCENTILE DATA
+  city_percentile <- ecdf(ex_perc$value)(ex_outbreak$value)
+  ex_outbreak$percentile <- city_percentile * 100
+  file_name <- paste0("percentile_data/prcp_seas/", df_stations$file_id[i], "_prcp_seas.rds")
+  saveRDS(ex_outbreak, file_name)
+  
+}  
+
+for(file in list.files("percentile_data/prcp_seas/")) 
+{
+  city_name <- gsub(".rds", "", file)
+  ex_outbreak <- readRDS(paste0("percentile_data/prcp_seas", file))
+d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
+}
+
+#TMAX - SUBSET IN 2-WEEK SEASONAL RANGE 
+
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  ex_perc <- ex
+  ex_perc$date <- yday(ex_perc$date)
+  ex_perc <- filter(ex_perc, date %in% seq(as.numeric(df_stations$before_onset_yday[i]), as.numeric(df_stations$onset_yday[i])))
+  ex_perc <- filter(ex_perc, metric=="tmax")
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "onset"]))
+  ex_outbreak <- filter(ex, date %within% int)
+  ex_outbreak <- filter(ex_outbreak, metric=="tmax")
+  ex_outbreak <- mutate(ex_outbreak, day_in_seq = 1:nrow(ex_outbreak))
+  
+  #PERCENTILE DATA
+  city_percentile <- ecdf(ex_perc$value)(ex_outbreak$value)
+  ex_outbreak$percentile <- city_percentile * 100
+  file_name <- paste0("percentile_data/tmax_seas/", df_stations$file_id[i], "_tmax_seas.rds")
+  saveRDS(ex_outbreak, file_name)
+  
+}  
+
+for(file in list.files("percentile_data/tmax_seas/")) 
+{
+  city_name <- gsub(".rds", "", file)
+  ex_outbreak <- readRDS(paste0("percentile_data/tmax_seas", file))
+  d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
+}
+
+#TMIN - SUBSET IN 2-WEEK SEASONAL RANGE 
+
+for(i in 1:length(list.files("weather_files")))
+{
+  file <- list.files("weather_files")[i]
+  city_name <- gsub(".rds", "", file)
+  averaged <- readRDS(paste0("weather_files/", file))
+  
+  ex <- averaged %>%
+    select(-ends_with("reporting")) %>%
+    gather("metric", "value", -date)
+  
+  ex_perc <- ex
+  ex_perc$date <- yday(ex_perc$date)
+  ex_perc <- filter(ex_perc, date %in% seq(as.numeric(df_stations$before_onset_yday[i]), as.numeric(df_stations$onset_yday[i])))
+  ex_perc <- filter(ex_perc, metric=="tmin")
+  int <- interval(ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "before_onset"]),
+                  ymd(df_stations[df_stations$id == 
+                                    gsub("_", " ", city_name),
+                                  "onset"]))
+  ex_outbreak <- filter(ex, date %within% int)
+  ex_outbreak <- filter(ex_outbreak, metric=="tmin")
+  ex_outbreak <- mutate(ex_outbreak, day_in_seq = 1:nrow(ex_outbreak))
+  
+  
+  
+  #PERCENTILE DATA
+  city_percentile <- ecdf(ex_perc$value)(ex_outbreak$value)
+  ex_outbreak$percentile <- city_percentile * 100
+  file_name <- paste0("percentile_data/tmin_seas/", df_stations$file_id[i], "_tmin_seas.rds")
+  saveRDS(ex_outbreak, file_name)
+  
+}  
+
+for(file in list.files("percentile_data/tmax_seas/")) 
+{
+  city_name <- gsub(".rds", "", file)
+  ex_outbreak <- readRDS(paste0("percentile_data/tmax_seas", file))
+  d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
+    geom_bar(stat="identity") +
+    ggtitle(city_name) +
+    ylim(c(0,100))
+  print(d)
+}
+
+for(i in 1:length(df_stations$id))
+{
+file <- list.files("percentile_data/prcp_seas")[i]
+prcp_seas <- readRDS(paste0("percentile_data/prcp_seas/", file))
+prcp_seas <- arrange(prcp_seas, desc(day_in_seq))
+
+file <- list.files("percentile_data/tmax_seas")[i]
+tmax_seas <- readRDS(paste0("percentile_data/tmax_seas/", file))
+tmax_seas <- arrange(tmax_seas, desc(day_in_seq))
+
+file <- list.files("percentile_data/tmin_seas")[i]
+tmin_seas <- readRDS(paste0("percentile_data/tmin_seas/", file))
+tmin_seas <- arrange(tmin_seas, desc(day_in_seq))
+
+file <- list.files("percentile_data/prcp_year")[i]
+prcp_year <- readRDS(paste0("percentile_data/prcp_year/", file))
+prcp_year <- arrange(prcp_year, desc(day_in_seq))
+
+file <- list.files("percentile_data/tmax_year")[i]
+tmax_year <- readRDS(paste0("percentile_data/tmax_year/", file))
+tmax_year <- arrange(tmax_year, desc(day_in_seq))
+
+file <- list.files("percentile_data/tmin_year")[i]
+tmin_year <- readRDS(paste0("percentile_data/tmin_year/", file))
+tmin_year <- arrange(tmin_year, desc(day_in_seq))
+
+city_name <- df_stations$file_id[i]
+city_name
+city_name <- data.frame("days_before_onset" = c(0:14),
+                      "TMAX_year" = c(tmax_year$percentile),
+                      "TMAX_seasonal" = c(tmax_seas$percentile),
+                      "TMIN_year" = c(tmin_year$percentile),
+                      "TMIN_seasonal" = c(tmin_seas$percentile),
+                      "PRCP_year" = c(prcp_year$percentile),
+                      "PRCP_seasonal" = c(prcp_seas$percentile)
+                    ) 
+city_name
+file_name <- paste0("percentile_tables/", df_stations$file_id[i], ".rds")
+saveRDS(city_name, file_name)
+}
+```
 

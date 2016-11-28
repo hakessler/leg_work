@@ -3,6 +3,7 @@ library(devtools)
 #install_github("ropenscilabs/riem")
 library(rnoaa)
 #library(riem)
+#install.packages("countyweather")
 library(countyweather)
 library(dplyr)
 library(plyr)
@@ -504,6 +505,5 @@ file_name <- paste0("percentile_tables/", df_stations$file_id[i], ".rds")
 saveRDS(city_name, file_name)
 }
 
-#Check percentiles
-#TABLE: outbreak, lead(#days before outbreak started), percentiles (year and seasonal)
-#?'%within'
+
+#percentiles, look at literature time frames 
