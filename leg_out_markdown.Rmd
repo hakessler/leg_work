@@ -28,6 +28,7 @@ library(tidyr)
 library(weathermetrics)
 library(ggplot2)
 library(lubridate)
+library(knitr)
 ```
 
 I created a data frame including the locations of each outbreak. I found the coordinates at http://maps.cga.harvard.edu/gpf/ and crossed checked them with Google coordinates. The other data in this set are year of outbreak and the year 10 years before the outbreak, onset date, and 14 days before the onset date. 
@@ -82,7 +83,7 @@ for(i in 1:length(outbreak_loc$onset)) {
   outbreak_loc[i,10] <- paste(b)
 }
 outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
-
+outbreak_loc
 knitr::kable(outbreak_loc)
 ```
 
@@ -138,7 +139,7 @@ for(i in which(has_stations))
   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
   good_monitors <- unique(filtered$id)
   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
-  averaged <- countyweather:::ave_weather(filtered_data)
+  averaged <- countyweather:::ave_daily(filtered_data)
 
   # For metrics that are reported in tenths of units (precipitation
   # and temperature), divide by 10 to get values in degrees Celsius and
