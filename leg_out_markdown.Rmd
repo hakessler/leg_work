@@ -76,7 +76,6 @@ for(i in 1:length(outbreak_loc$onset)) {
   outbreak_loc[i,10] <- paste(b)
 }
 outbreak_loc <- rename(outbreak_loc, replace = c("V10"="before_onset"))
-outbreak_loc
 knitr::kable(outbreak_loc)
 ```
 
@@ -588,7 +587,7 @@ for(i in 1:length(df_stations$id)) {
     final_df <- rbind(final_df,df)
   }
 }
-final_df
+knitr::kable(final_df)
 ```
 
 ```{r, echo=FALSE}
