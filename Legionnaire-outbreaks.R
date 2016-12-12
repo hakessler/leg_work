@@ -507,8 +507,38 @@ file_name <- paste0("percentile_tables/", df_stations$file_id[i], ".rds")
 saveRDS(city_name, file_name)
 }
 
-for(i in 1:length(df_stations$id))
-{ file <- list.files("percentile_tables/")[i]
-  df <- readRDS(paste0("percentile_tables/"), file)
-  
+for(i in 1:length(df_stations$id)) {
+  file <- list.files("percentile_tables/")[i]
+  df <- readRDS(paste0("percentile_tables/", file))
+  df$outbreak <- i
+  if(i==1) {
+    final_df <- df
+  }else{
+    final_df <- rbind(final_df,df)
+  }
 }
+
+ggplot(final_df, aes(x=days_before_onset, y=TMAX_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMAX_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMIN_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMIN_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=PRCP_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=PRCP_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
