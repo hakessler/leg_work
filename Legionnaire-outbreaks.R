@@ -95,30 +95,30 @@ outbreak_loc_true <- outbreak_loc %>%  filter(has_stations)
 #### DATA GATHER & SAVE ####
 # Only need to run once to save the data 
 
-for(i in which(has_stations))
-{
-  meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
-                                  keep_flags = FALSE,
-                                  date_min = outbreak_loc$date_min[i],
-                                  date_max = outbreak_loc$date_max[i],
-                                  var = c("prcp","snow","snwd","tmax","tmin","tavg"))
-
-  coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
-  filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
-  good_monitors <- unique(filtered$id)
-  filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
-  averaged <- countyweather:::ave_daily(filtered_data)
-
-  # For metrics that are reported in tenths of units (precipitation
-  # and temperature), divide by 10 to get values in degrees Celsius and
-  # millimeters
-  which_tenth_units <- which(colnames(averaged) %in%
-                               c("prcp", "tavg", "tmax", "tmin"))
-  averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
-
-  file_name <- paste0("weather_files_temp/", outbreak_loc$file_id[i], ".rds")
-  saveRDS(averaged, file_name)
-}
+# for(i in which(has_stations))
+# {
+#   meteo_df <- meteo_pull_monitors(monitors = stations[[i]]$id,
+#                                   keep_flags = FALSE,
+#                                   date_min = outbreak_loc$date_min[i],
+#                                   date_max = outbreak_loc$date_max[i],
+#                                   var = c("prcp","snow","snwd","tmax","tmin","tavg"))
+# 
+#   coverage_df <- rnoaa::meteo_coverage(meteo_df, verbose = FALSE)
+#   filtered <- countyweather:::filter_coverage(coverage_df, 0.90)
+#   good_monitors <- unique(filtered$id)
+#   filtered_data <- dplyr::filter(meteo_df, id %in% good_monitors)
+#   averaged <- countyweather:::ave_daily(filtered_data)
+# 
+#   # For metrics that are reported in tenths of units (precipitation
+#   # and temperature), divide by 10 to get values in degrees Celsius and
+#   # millimeters
+#   which_tenth_units <- which(colnames(averaged) %in%
+#                                c("prcp", "tavg", "tmax", "tmin"))
+#   averaged[ , which_tenth_units] <- averaged[ , which_tenth_units] / 10
+# 
+#   file_name <- paste0("weather_files_temp/", outbreak_loc$file_id[i], ".rds")
+#   saveRDS(averaged, file_name)
+# }
 
 
 ###DATA ANALYZE###
@@ -507,5 +507,8 @@ file_name <- paste0("percentile_tables/", df_stations$file_id[i], ".rds")
 saveRDS(city_name, file_name)
 }
 
-
-#percentiles, look at literature time frames 
+for(i in 1:length(df_stations$id))
+{ file <- list.files("percentile_tables/")[i]
+  df <- readRDS(paste0("percentile_tables/"), file)
+  
+}
