@@ -390,7 +390,8 @@ for(i in 1:length(list.files("weather_files")))
 }
 ```
 
-
+# PERCENTILES
+## Table and Plots 
 Now I gathered a 2-week seasonal subset data for each weather variable and plotted it in a single table. I saved the table data for each outbreak and plotted them in a facetted plot.s 
 
 ```{r, eval = FALSE, echo=FALSE}
