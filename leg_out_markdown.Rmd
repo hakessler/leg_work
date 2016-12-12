@@ -11,13 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The coordinates of the Legionnairess Disease outbreaks will be used to gather weather data from surrounding stations. The averages of the data will be taken and outputted into a graph containing data from the last 10 years before the outbreak.
 
-First I installed and downloaded the packages needed including rnoaa from github.
-
-```{r, eval=FALSE}
-library(devtools)
-install_github("geanders/rnoaa")
-```
-
 ```{r, message=FALSE}
 library(devtools)
 library(rnoaa)
@@ -109,7 +102,7 @@ stations <- df
 saveRDS(stations, file = "stations.RData")
 ```
 
-```{r}
+```{r, echo=FALSE}
 stations <- readRDS("stations.RData")
 stations
 ```
@@ -233,7 +226,7 @@ for(file in list.files("weather_files"))
 # PLOT 4
 ## Precipitation 
 
-I also made a loop to plot graphs and histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days.A plot of the percentiles is also included.
+I also made a loop to plot graphs and histograms of the data with lines indicating each day before the start of the outbreak for a total of 14 days.A plot of the percentiles is also included. The precentile data is saved for a plot of percentiles as shown later. 
 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
@@ -280,8 +273,8 @@ for(i in 1:length(list.files("weather_files")))
     ylim(c(0,100))
   print(d)
   
-  file_name <- paste0("percentile_data/prcp_year/", df_stations$file_id[i], "_prcp_year.rds")
-  saveRDS(ex_outbreak, file_name)
+  #file_name <- paste0("percentile_data/prcp_year/", df_stations$file_id[i],   #"_prcp_year.rds")
+  #saveRDS(c_outbreak, file_name)
   
 }
 ```
@@ -337,8 +330,8 @@ for(i in 1:length(list.files("weather_files")))
     ylim(c(0,100))
   print(d)
   
-  file_name <- paste0("percentile_data/tmax_year/", df_stations$file_id[i], "_tmax_year.rds")
-  saveRDS(ex_outbreak, file_name)
+  #file_name <- paste0("percentile_data/tmax_year/", df_stations$file_id[i], #"_tmax_year.rds")
+  #saveRDS(c_outbreak, file_name)
 } 
 ```
 
@@ -392,15 +385,15 @@ for(i in 1:length(list.files("weather_files")))
     ylim(c(0,100))
   print(d)
   
-  file_name <- paste0("percentile_data/tmin_year/", df_stations$file_id[i], "_tmin_year.rds")
-  saveRDS(ex_outbreak, file_name)
+  #file_name <- paste0("percentile_data/tmin_year/", df_stations$file_id[i], #"_tmin_year.rds")
+  #saveRDS(c_outbreak, file_name)
 }
 ```
 
 
-Now I gathered a 2-week seasonal subset data for each weather variable and plotted it in a table.
+Now I gathered a 2-week seasonal subset data for each weather variable and plotted it in a single table. I saved the table data for each outbreak and plotted them in a facetted plot.s 
 
-```{r, echo=FALSE}
+```{r, eval = FALSE, echo=FALSE}
 #PRCP - SUBSET IN 2-WEEK SEASONAL RANGE 
 
 for(i in 1:length(list.files("weather_files")))
@@ -538,6 +531,9 @@ for(file in list.files("percentile_data/tmax_seas/"))
   print(d)
 }
 
+```
+
+```{r, eval=FALSE, echo=FALSE}
 for(i in 1:length(df_stations$id))
 {
 file <- list.files("percentile_data/prcp_seas")[i]
@@ -564,9 +560,9 @@ file <- list.files("percentile_data/tmin_year")[i]
 tmin_year <- readRDS(paste0("percentile_data/tmin_year/", file))
 tmin_year <- arrange(tmin_year, desc(day_in_seq))
 
-city_name <- df_stations$file_id[i]
-city_name
-city_name <- data.frame("days_before_onset" = c(0:14),
+#city_name <- df_stations$file_id[i]
+num <- length(df_stations$id) - 1
+city_name <- data.frame("days_before_onset" = c(0:num),
                       "TMAX_year" = c(tmax_year$percentile),
                       "TMAX_seasonal" = c(tmax_seas$percentile),
                       "TMIN_year" = c(tmin_year$percentile),
@@ -574,9 +570,50 @@ city_name <- data.frame("days_before_onset" = c(0:14),
                       "PRCP_year" = c(prcp_year$percentile),
                       "PRCP_seasonal" = c(prcp_seas$percentile)
                     ) 
-city_name
 file_name <- paste0("percentile_tables/", df_stations$file_id[i], ".rds")
 saveRDS(city_name, file_name)
 }
+
+```
+
+```{r, echo=FALSE}
+for(i in 1:length(df_stations$id)) {
+  file <- list.files("percentile_tables/")[i]
+  df <- readRDS(paste0("percentile_tables/", file))
+  df$outbreak <- i
+  if(i==1) {
+    final_df <- df
+  }else{
+    final_df <- rbind(final_df,df)
+  }
+}
+final_df
+```
+
+```{r, echo=FALSE}
+ggplot(final_df, aes(x=days_before_onset, y=TMAX_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMAX_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMIN_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=TMIN_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=PRCP_year)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
+ggplot(final_df, aes(x=days_before_onset, y=PRCP_seasonal)) + 
+  facet_wrap(~outbreak, ncol=4) + 
+  geom_bar(stat="identity") + 
+  ylim(c(0,100)) 
 ```
 
