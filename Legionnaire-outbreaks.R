@@ -364,17 +364,6 @@ for(i in 1:length(list.files("weather_files")))
   
 }  
 
-for(file in list.files("percentile_data/prcp_seas/")) 
-{
-  city_name <- gsub(".rds", "", file)
-  ex_outbreak <- readRDS(paste0("percentile_data/prcp_seas/", file))
-d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
-    geom_bar(stat="identity") +
-    ggtitle(city_name) +
-    ylim(c(0,100))
-print(d)
-}
-
 #TMAX - SUBSET IN 2-WEEK SEASONAL RANGE 
 
 for(i in 1:length(list.files("weather_files")))
@@ -408,17 +397,6 @@ for(i in 1:length(list.files("weather_files")))
   saveRDS(ex_outbreak, file_name)
   
 }  
-
-for(file in list.files("percentile_data/tmax_seas/")) 
-{
-  city_name <- gsub(".rds", "", file)
-  ex_outbreak <- readRDS(paste0("percentile_data/tmax_seas/", file))
-  d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
-    geom_bar(stat="identity") +
-    ggtitle(city_name) +
-    ylim(c(0,100))
-  print(d)
-}
 
 #TMIN - SUBSET IN 2-WEEK SEASONAL RANGE 
 
@@ -456,16 +434,6 @@ for(i in 1:length(list.files("weather_files")))
   
 }  
 
-for(file in list.files("percentile_data/tmax_seas/")) 
-{
-  city_name <- gsub(".rds", "", file)
-  ex_outbreak <- readRDS(paste0("percentile_data/tmax_seas/", file))
-  d <- ggplot(ex_outbreak, aes(x = day_in_seq, y = percentile)) +
-    geom_bar(stat="identity") +
-    ggtitle(city_name) +
-    ylim(c(0,100))
-  print(d)
-}
 
 #TABLE PRECENTILE DATA
 for(i in 1:length(df_stations$id))
